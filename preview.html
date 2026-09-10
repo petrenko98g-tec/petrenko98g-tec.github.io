@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Happy Sport Club — перегляд</title>
+<style>
+  :root { --bg:#e9eaec; --line:#d3d5da; --ink:#111; --muted:#6b7076; --accent:#111 }
+  * { box-sizing:border-box }
+  body { margin:0; background:var(--bg); font:13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; color:var(--ink) }
+  header { position:sticky; top:0; z-index:5; background:#fff; border-bottom:1px solid var(--line);
+           padding:10px 16px; display:flex; align-items:center; gap:14px; flex-wrap:wrap }
+  header b { font-size:14px; margin-right:4px }
+  .group { display:flex; gap:6px; align-items:center }
+  .group > label { color:var(--muted) }
+  select, button { font:inherit; padding:6px 11px; border:1px solid var(--line); background:#fff; border-radius:7px; cursor:pointer }
+  button.on { background:var(--accent); color:#fff; border-color:var(--accent) }
+  .stamp { color:var(--muted); margin-left:auto }
+  .stage { display:flex; justify-content:center; padding:22px }
+  .device { background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden;
+            box-shadow:0 8px 26px rgba(0,0,0,.10) }
+  .bar { padding:7px 12px; border-bottom:1px solid var(--line); color:var(--muted);
+         display:flex; justify-content:space-between; align-items:center; font-variant-numeric:tabular-nums }
+  .frame { position:relative; overflow:hidden; background:#0D0D0D }
+  iframe { border:0; display:block; transform-origin:0 0 }
+</style>
+</head>
+<body>
+<header>
+  <b>Happy Sport Club</b>
+  <div class="group" id="devices"></div>
+  <div class="group">
+    <label>сторінка</label>
+    <select id="page">
+      <option value="index.html">Головна</option>
+      <option value="training.html">Тренування</option>
+      <option value="classes.html">Заняття</option>
+    </select>
+  </div>
+  <button id="reload">Перезавантажити</button>
+  <span class="stamp" id="stamp"></span>
+</header>
+
+<div class="stage"><div class="device">
+  <div class="bar"><span id="devname"></span><span id="devsize"></span></div>
+  <div class="frame" id="frame"></div>
+</div></div>
+
+<script>
+var DEVICES = [
+  { name: 'Мобільний', w: 390,  h: 844,  scale: 1    },
+  { name: 'Планшет',   w: 834,  h: 1112, scale: 0.72 },
+  { name: 'Десктоп',   w: 1440, h: 900,  scale: 0.78 }
+];
+var current = 0;
+var frame = document.getElementById('frame');
+var pageSel = document.getElementById('page');
+var btnWrap = document.getElementById('devices');
+
+DEVICES.forEach(function (d, i) {
+  var b = document.createElement('button');
+  b.textContent = d.name;
+  b.addEventListener('click', function () { current = i; render(); });
+  btnWrap.appendChild(b);
+});
+
+function render() {
+  var d = DEVICES[current];
+  [].forEach.call(btnWrap.children, function (b, i) { b.className = i === current ? 'on' : ''; });
+  document.getElementById('devname').textContent = d.name;
+  document.getElementById('devsize').textContent = d.w + ' × ' + d.h;
+  frame.style.width = Math.round(d.w * d.scale) + 'px';
+  frame.style.height = Math.round(d.h * d.scale) + 'px';
+  // one app instance only — three at once stalls the renderer (React + hero video)
+  frame.innerHTML = '<iframe src="' + pageSel.value + '?t=' + Date.now() + '" style="width:' +
+    d.w + 'px;height:' + d.h + 'px;transform:scale(' + d.scale + ')"></iframe>';
+  document.getElementById('stamp').textContent = 'оновлено ' + new Date().toLocaleTimeString('uk-UA');
+}
+
+pageSel.addEventListener('change', render);
+document.getElementById('reload').addEventListener('click', render);
+render();
+</script>
+</body>
+</html>
