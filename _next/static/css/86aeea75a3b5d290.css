@@ -20,3 +20,74 @@ div.w-5:has(> a[href*="login-register"]){display:none!important}
    uppercase and its tracking-subline letter-spacing (.25rem). Same font family as
    before — the eyebrow and the body already share font-sofia-sans-extra-condensed. */
 .rte-style strong{color:rgb(255 221 0)!important;text-transform:uppercase;letter-spacing:.25rem}
+
+/* An image-text teaser whose media was removed: the module keeps its md:grid-cols-2 and
+   the component still sizes the (now empty) media column, which left half the section
+   blank. The empty half is dropped and the module falls back to its own single-column
+   layout (its flex flex-col, the same one it uses below md). Only where the section has
+   no picture at all — a block with a background photo keeps its two columns, text on the
+   left and the photo showing through on the right. */
+section:not(:has(img)):not(:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "])) .image-text-teaser-module>div:empty{display:none!important}
+section:not(:has(img)):not(:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "])) .image-text-teaser-module:has(>div:empty){display:flex!important}
+/* the media variant zeroes the module's own side padding (the image has to bleed) and
+   moves it onto the text column; with no media both go back to the module's own scale,
+   the one every text-only module on this site uses: px-6 sm:px-8 md:px-10 xl:px-52 */
+section:not(:has(img)):not(:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "])) .image-text-teaser-module:has(>div:empty)>div{padding-left:0!important;padding-right:0!important}
+section:not(:has(img)):not(:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "])) .image-text-teaser-module:has(>div:empty){padding-left:1.5rem!important;padding-right:1.5rem!important}
+@media (min-width:640px){section:not(:has(img)):not(:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "])) .image-text-teaser-module:has(>div:empty){padding-left:2rem!important;padding-right:2rem!important}}
+@media (min-width:768px){section:not(:has(img)):not(:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "])) .image-text-teaser-module:has(>div:empty){padding-left:2.5rem!important;padding-right:2.5rem!important}}
+@media (min-width:1280px){section:not(:has(img)):not(:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "])) .image-text-teaser-module:has(>div:empty){padding-left:13rem!important;padding-right:13rem!important}}
+
+/* Intro overlay rebrand (see media/intro-logo.js). Kept in this <head> stylesheet so it
+   holds from the very first paint: the Gold's Gym logo video stays in the markup (its
+   load/ended events drive the site's intro state) but is never shown, and our logo is
+   drawn in the same black panel with the flip-in used for the previous preloader. As a
+   pseudo-element it adds nothing to React's markup, so hydration keeps the overlay. */
+div.z-50:has(video) video{visibility:hidden!important}
+div.z-50:has(video)>div{perspective:800px}
+@keyframes ggPreIn{from{transform:rotateX(-90deg) translateY(100%)}to{transform:rotateX(0deg) translateY(0)}}
+div.z-50:has(video)>div::after{content:"";position:absolute;top:50%;left:50%;width:min(12rem,40vw);aspect-ratio:1/1;margin:-3rem 0 0 calc(min(12rem,40vw)/-2);background:url(../../../media/logo-icon-yellow.png) center/contain no-repeat;transform-style:preserve-3d;backface-visibility:hidden;animation:ggPreIn .85s cubic-bezier(.215,.61,.355,1) both}
+
+/* The light sections are bg-transparent: golds-gym.de leaves the page to the browser's
+   default white canvas. Anywhere that canvas is not white — this site inside the preview
+   frame, a Responsively webview, a browser in dark mode — they turned black. The page
+   now paints its own white, the site's bg-white value. */
+html{background-color:rgb(255 255 255)}
+
+
+/* The shoutout band (Бранчі / Зустрічі / Події / Люди) in white, cards included. The grid
+   component hard-codes the gg look — bg-black section, bg-black card, text-white copy —
+   with no data option for it, so those three are turned here with the site's own values
+   (bg-white, text-black); the card keeps its ci-yellow border, and the titles are made
+   black in the data (shoutoutShoutoutHeadlineGroup.color). The subline has no colour of
+   its own and follows the card. Scoped to grids whose cards carry a subline: ours do,
+   Gold's Gym's price cards don't. */
+.grid-module:has(.shoutout-teaser p.tracking-subline){background-color:rgb(255 255 255)}
+.grid-module:has(.shoutout-teaser p.tracking-subline) .shoutout-teaser > div{background-color:rgb(255 255 255)}
+.grid-module:has(.shoutout-teaser p.tracking-subline) .shoutout-teaser .text-white{color:rgb(0 0 0)}
+/* Room under the band: its own py-8 left 32px below the cards against 64px above them
+   (the text block's !py-8 bottom plus the band's top). The bottom takes the site's py-16
+   step, 4rem, so the cards sit with the same space on both sides. */
+.grid-module:has(.shoutout-teaser p.tracking-subline) .grid-wrapper{padding-bottom:4rem}
+
+/* Hairlines between two dark blocks. A block with a fractional height (the three-small
+   block measures 989.07px) puts every later boundary on a half pixel, and where two black
+   blocks meet the page's white shows through the anti-aliased row as a grey line. The
+   site's own fix for this is the -mb-[1px] on its stage wrapper: each block overlaps the
+   next by one pixel. Applied to every block of the page. */
+main > main.relative > :not(:last-child){margin-bottom:-1px}
+
+@media (max-width:767px){section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .image-text-teaser-module>div:empty{display:none}}
+/* footer "Увімкни життя" band on the brand yellow (the site's bg-ci-yellow) */
+.footer .footer-top-elements{background-color:rgb(255 221 0)}
+/* footer headline in two lines, "Запишись" / "у вейт-лист" (a line break in the text, no
+   wrapping inside the second line): the paragraph takes its longest line's width and the
+   column's own items-center centres it. At 7.5rem that line needs 1059px, so the step
+   drops to the h1-accent 4.5rem (text-6.5xl / leading-20), and to 3.5rem below md, until the screen has room. */
+.footer .footer-bottom-followus{white-space:pre-line;width:max-content;max-width:none}
+@media (min-width:576px) and (max-width:767px){.footer .footer-bottom-followus{font-size:3.5rem;line-height:3.5rem}}
+@media (min-width:768px) and (max-width:1279px){.footer .footer-bottom-followus{font-size:4.5rem;line-height:5rem}}
+/* waitlist block: the section container's own vertical steps (py-8 sm:py-10 md:py-12 xl:py-16) instead of the teaser's !py-8 */
+@media (min-width:576px){section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .image-text-teaser-module{padding-top:2.5rem!important;padding-bottom:2.5rem!important}}
+@media (min-width:768px){section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .image-text-teaser-module{padding-top:3rem!important;padding-bottom:3rem!important}}
+@media (min-width:1440px){section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .image-text-teaser-module{padding-top:4rem!important;padding-bottom:4rem!important}}

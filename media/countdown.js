@@ -28,11 +28,20 @@
   var UNITS = [['d', 'днів'], ['h', 'годин'], ['m', 'хвилин'], ['s', 'секунд']];
 
 
+  // Where the banner goes.
+  // With the intro overlay (home page): as on golds-gym.de, first child of the sticky
+  // header wrapper, so it sits above the menu and stays pinned with it. That wrapper is
+  // React's markup, so the banner is added after hydration — the overlay covers it.
+  // Without the overlay nothing would cover a late banner, and adding it after hydration
+  // pushed the header down in view. There it goes in before the first paint, right
+  // before React's root (#__next) where React never looks, and is pinned by itself:
+  // sticky at the top, with the header's own sticky offset moved down by its height.
+  var INTRO = !!document.querySelector('div.z-50 video');
+
   function build() {
-    // same place as on golds-gym.de: first child of the sticky header wrapper,
-    // so the banner sits above the menu and stays pinned with it
-    var host = document.querySelector('.sticky');
-    if (!host || host.querySelector('[data-gg="countdown"]')) return;
+    var host = INTRO ? document.querySelector('.sticky') : document.body;
+    if (!host || document.querySelector('[data-gg="countdown"]')) return;
+    if (!INTRO && !document.getElementById('__next')) return;
 
     var bar = document.createElement('div');
     bar.setAttribute('data-gg', 'countdown');
@@ -62,7 +71,17 @@
         'href="' + CTA.ctaLink + '">' + CTA.ctaText + '</a></div>' : '');
 
 
-    host.insertBefore(bar, host.firstChild);
+    if (INTRO) {
+      host.insertBefore(bar, host.firstChild);
+    } else {
+      bar.setAttribute('data-gg-out', '');
+      host.insertBefore(bar, document.getElementById('__next'));
+      var setH = function () {
+        document.documentElement.style.setProperty('--gg-cd-h', bar.offsetHeight + 'px');
+      };
+      setH();
+      if (window.ResizeObserver) new ResizeObserver(setH).observe(bar);
+    }
     tick();
   }
 
@@ -86,20 +105,40 @@
   // native sm:text-5.5xl / sm:leading-14 (3.5rem). Phone and desktop keep their own sizes.
   var css = document.createElement('style');
   css.textContent = [
+    // out-of-root banner: pinned on its own, above the header (z-20); the header sticks
+    // right under it instead of at 0
+    '[data-gg="countdown"][data-gg-out]{position:sticky;top:0;z-index:21}',
+    'html:has([data-gg-out]) .sticky{top:var(--gg-cd-h,0px)!important}',
+    // Phone (below md, where the banner stacks): title and link share one row under the
+    // digits instead of taking a row each. The rows become the site's own 2-row template
+    // (grid-rows-countdownMobileNoCTA: 2fr 1fr), the digits span both columns, and the
+    // two texts sit side by side with the site's gap-4 (1rem) between them.
+    '@media (max-width:767px){',
+    '  [data-gg="countdown"]{grid-template-columns:auto auto;grid-template-rows:2fr 1fr;'
+    + 'justify-content:center;column-gap:1rem}',
+    '  [data-gg="countdown"] > div:nth-child(2){grid-column:1 / -1;grid-row:1}',
+    '  [data-gg="countdown"] > h4{grid-column:1;grid-row:2;padding-left:0;padding-right:0}',
+    '  [data-gg="countdown"] > div:nth-child(3){grid-column:2;grid-row:2;align-self:center}',
+    '}',
     '@media (min-width:640px) and (max-width:1023px){',
-    '  [data-gg="countdown"] [data-u]{font-size:2.529rem!important;line-height:2.529rem!important}',
+    '  [data-gg="countdown"] [data-u]{font-size:2.5rem!important;line-height:2.5rem!important}',
     // heading and link cut by the same amount as the digits, so the title stops
     // wrapping to three lines and the link clears the close button
-    '  [data-gg="countdown"] h4,[data-gg="countdown"] a{font-size:1.444rem!important;line-height:1.7rem!important}',
+    '  [data-gg="countdown"] h4,[data-gg="countdown"] a{font-size:1.375rem!important;line-height:1.7rem!important}',
     '}'
   ].join('\n');
   (document.head || document.documentElement).appendChild(css);
 
-  build();
-  document.addEventListener('DOMContentLoaded', build);
-  window.addEventListener('load', build);
-  setInterval(tick, 1000);
-  var mo = new MutationObserver(build);
-  mo.observe(document.documentElement, { childList: true, subtree: true });
-  setTimeout(function () { mo.disconnect(); }, 10000);
+  if (!INTRO) build();                                   // before the first paint
+
+  // not before React has taken over the server HTML (see media/ready.js)
+  (window.ggReady || function (f) { f(); })(function () {
+    build();
+    document.addEventListener('DOMContentLoaded', build);
+    window.addEventListener('load', build);
+    setInterval(tick, 1000);
+    var mo = new MutationObserver(build);
+    mo.observe(document.documentElement, { childList: true, subtree: true });
+    setTimeout(function () { mo.disconnect(); }, 10000);
+  });
 })();

@@ -38,7 +38,7 @@
       p.setAttribute('data-gg', 'para');
       // white-space keeps the line breaks the copy is written with
       // full white at the site's normal weight — the earlier 300/75% washed out over the photo
-      p.style.cssText = 'max-width:640px;font-size:18px;font-weight:400;line-height:1.6;color:#fff;margin-top:20px;text-align:left;white-space:pre-line';
+      p.style.cssText = 'max-width:640px;font-size:1.125rem;font-weight:400;line-height:1.6;color:#fff;margin-top:20px;text-align:left;white-space:pre-line';
       p.textContent = PARA;
       headWrap.appendChild(p);
     } else if (existing && existing.textContent !== PARA) {
@@ -53,17 +53,18 @@
       var label = CTA;
       var box = document.createElement('div');
       box.setAttribute('data-gg', 'form');
-      // 480px = phone field (min 160) + gap + the button's natural single-line width
-      box.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;max-width:480px';
+      // phone field (min 160) + gap + the button's natural single-line width; the label
+      // runs at the header's 1.375rem now, so the row needs the extra space
+      box.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;max-width:560px';
       box.innerHTML =
         '<input type="tel" placeholder="Твій номер телефону" style="flex:1;min-width:160px;background:#fff;color:#000;border:none;padding:14px 18px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box">' +
-        '<button data-variant="primary" style="width:auto;flex:0 0 auto;white-space:nowrap;font-size:1.04rem;padding-left:1.75rem;padding-right:1.75rem" class="cta-button variant-primary text-center duration-250 ease-in-out font-sofia-sans-extra-condensed font-bold text-[1.3rem] leading-6.5 tracking-0.125 uppercase box-border py-3.5 text-black hover:text-ci-yellow bg-ci-yellow hover:bg-black border-2 border-ci-yellow hover:border-black stage-content__cta checkout-cta">' + label + '</button>';
+        '<button data-variant="primary" style="width:auto;flex:0 0 auto;white-space:nowrap;font-size:1.375rem;padding-left:1.75rem;padding-right:1.75rem" class="cta-button variant-primary text-center duration-250 ease-in-out font-sofia-sans-extra-condensed font-bold text-[1.3rem] leading-6.5 tracking-0.125 uppercase box-border py-3.5 text-black hover:text-ci-yellow bg-ci-yellow hover:bg-black border-2 border-ci-yellow hover:border-black stage-content__cta checkout-cta">' + label + '</button>';
       if (link) link.remove();
       holder.appendChild(box);
 
       var fine = document.createElement('p');
       fine.setAttribute('data-gg', 'fine');
-      fine.style.cssText = 'font-size:13px;line-height:1.6;color:#fff;margin:12px 0 0;max-width:460px';
+      fine.style.cssText = 'font-size:.75rem;line-height:1.6;color:#fff;margin:12px 0 0;max-width:460px';
       fine.textContent = FINE;
       holder.appendChild(fine);
     }
@@ -98,20 +99,23 @@
     '@media (min-width:1280px){.stage-module .xl\\:px-52{padding-left:2.5rem!important;padding-right:2.5rem!important}}',
     // gap eyebrow -> headline: the site's mb-6 (24px) cut by 35%
     '.stage-module .tracking-subline.mb-6{margin-bottom:15.6px!important}',
-    '.tracking-subline.text-2\\.75xl{font-size:.71rem!important}',
-    '.tracking-subline.sm\\:text-3\\.5xl{font-size:.83rem!important}',
-    '.text-4\\.25xl{font-size:1.85rem!important}',
-    '.sm\\:text-6\\.5xl{font-size:2.6rem!important}',
+    // eyebrow / header location line, on the site's own small steps instead of loose
+    // decimals: text-xs .75rem and text-sm .875rem
+    '.tracking-subline.text-2\\.75xl{font-size:.75rem!important}',
+    '.tracking-subline.sm\\:text-3\\.5xl{font-size:.875rem!important}',
     '@media (max-width:640px){.cta-button.stage-content__cta.checkout-cta{width:100%!important}}',
     // on a phone the written line breaks only make ragged half-lines — let the copy flow
     '@media (max-width:640px){p[data-gg="para"]{white-space:normal!important}}'
   ].join('\n');
   document.head.appendChild(css);
 
-  run();
-  document.addEventListener('DOMContentLoaded', run);
-  window.addEventListener('load', run);
-  var mo = new MutationObserver(run);
-  mo.observe(document.documentElement, { childList: true, subtree: true });
-  setTimeout(function () { mo.disconnect(); run(); }, 10000);
+  // not before React has taken over the server HTML (see media/ready.js)
+  (window.ggReady || function (f) { f(); })(function () {
+    run();
+    document.addEventListener('DOMContentLoaded', run);
+    window.addEventListener('load', run);
+    var mo = new MutationObserver(run);
+    mo.observe(document.documentElement, { childList: true, subtree: true });
+    setTimeout(function () { mo.disconnect(); run(); }, 10000);
+  });
 })();

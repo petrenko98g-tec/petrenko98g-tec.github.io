@@ -5,19 +5,22 @@
    flips initStageAnimation2 — the flag every stage module waits on for its reveal.
    Measured on this clone: hero reveal 2000-2715ms, overlay exit 3600-5300ms.
 
-   So the Gold's Gym logo video is only hidden, and our logo is placed in the same
-   black div with the flip-in already used for the previous preloader. Timing, easing
-   and the exit stay the site's own — nothing is invented here. */
+   So the Gold's Gym logo video is only hidden, and our logo sits in the same black
+   panel with the flip-in already used for the previous preloader. Both are done in the
+   stylesheet (_next/static/css/…, loaded in <head>), not here: this file runs at the end
+   of the body, so anything it did to the overlay came after the first paint — and an
+   <img> added to React's markup before hydration made React rebuild the whole page,
+   overlay included, which restarted the logo animation. Timing, easing and the exit stay
+   the site's own — nothing is invented here. */
 (function () {
-  var LOGO = 'media/logo-icon-yellow.png';
-
-  // ?nointro — skip the 5.5s intro overlay. Used for quick visual checks while
-  // building; the stage reveal is driven by its own timer, so nothing else changes.
+  // ?nointro — skip the 5.5s intro overlay for THIS page load only (used for quick
+  // visual checks while building). It must not write introAnimationShown: that flag
+  // lives in sessionStorage and would keep the intro switched off on later normal
+  // loads in the same browser session.
   if (/[?&]nointro\b/.test(location.search)) {
     var skip = document.createElement('style');
     skip.textContent = 'div.z-50:has(video){display:none!important}';
     (document.head || document.documentElement).appendChild(skip);
-    try { sessionStorage.setItem('introAnimationShown', 'true'); } catch (e) {}
   }
   var SPEED = 0.85; // intro + stage run 15% faster
 
@@ -45,35 +48,24 @@
     }).join(', ');
   }
 
+  // Only timings are touched here (style attributes, which React does not check while
+  // hydrating), so this can run straight away.
   function brand() {
-    var vids = document.querySelectorAll('div.z-50 video');
-    for (var i = 0; i < vids.length; i++) {
-      var v = vids[i];
-      // keep the node (its load/ended handlers drive the site's intro state), hide the frame
-      v.style.setProperty('visibility', 'hidden', 'important');
-      var black = v.closest('div.z-50') && v.closest('div.z-50').firstElementChild;
-      if (!black || black.querySelector('[data-gg="intro-logo"]')) continue;
-      var img = document.createElement('img');
-      img.setAttribute('data-gg', 'intro-logo');
-      img.src = LOGO;
-      img.alt = '';
-      black.appendChild(img);
-    }
     var overlay = document.querySelector('div.z-50');
-    if (overlay) faster(overlay);
+    if (overlay) {
+      faster(overlay);
+      // the lift itself runs twice as fast as the rest: the site's 1750ms exit is already
+      // at 1487ms after the global scaler, and this halves that leg only
+      var panel = overlay.firstElementChild;
+      if (panel && !panel.__ggLift) {
+        panel.__ggLift = true;
+        var dur = parseFloat(getComputedStyle(panel).transitionDuration) || 1.4875;
+        panel.style.setProperty('transition-duration', (dur / 2).toFixed(4) + 's', 'important');
+      }
+    }
     var stage = document.querySelector('.stage-module');
     if (stage) faster(stage);
   }
-
-  var css = document.createElement('style');
-  css.textContent = [
-    '@keyframes ggPreIn{from{transform:rotateX(-90deg) translateY(100%)}to{transform:rotateX(0deg) translateY(0)}}',
-    'div.z-50 > div{perspective:800px}',
-    'img[data-gg="intro-logo"]{position:absolute;top:50%;left:50%;width:12rem;max-width:40vw;' +
-      'margin:-3rem 0 0 -6rem;transform-style:preserve-3d;backface-visibility:hidden;' +
-      'animation:ggPreIn .85s cubic-bezier(.215,.61,.355,1) both}'
-  ].join('\n');
-  (document.head || document.documentElement).appendChild(css);
 
   brand();
   document.addEventListener('DOMContentLoaded', brand);

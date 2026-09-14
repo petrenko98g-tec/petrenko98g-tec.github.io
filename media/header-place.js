@@ -1,20 +1,15 @@
-/* Puts the location line next to the header CTA.
+/* Header: the location line next to the CTA, the CTA sizing, the desktop logo/menu
+   placement, and a plain #waitlist anchor.
 
-   Typography is not re-specified here: the element carries the same classes as the
-   hero eyebrow (tracking-subline / font-sofia-sans-extra-condensed / font-bold /
-   text-2.75xl sm:text-3.5xl / uppercase), so it inherits exactly the same font and
-   size, including the size overrides in hero.js. Colour is left to the header's own
-   text-white. The header is rendered by the bundle, so this runs after render. */
+   The location line is drawn in CSS (a ::after on the CTA's row), not added as an
+   element: the header is React's markup, and an element slipped in before hydration
+   made React throw the server HTML away and render the page again (#418). As CSS it is
+   there from the first paint on every page and React never sees it. Its type copies
+   the hero eyebrow's classes value for value — tracking-subline (.25rem),
+   font-sofia-sans-extra-condensed, font-bold, uppercase, leading-8 — at the eyebrow's
+   sm size (.875rem); before, the element took its size from overrides that only
+   index.html loads, so on the other pages it rendered at the raw 2rem, 508px wide. */
 (function () {
-  var TEXT = 'ЖК на Счастливому · Рівне';
-  var CLS = 'tracking-subline font-bold font-sofia-sans-extra-condensed ' +
-            'text-2.75xl sm:text-3.5xl uppercase leading-7 sm:leading-8';
-  // pin drawn in the same idiom as the site's inline icons: single path, currentColor
-  var PIN = '<svg width="10" height="14" viewBox="0 0 10 14" fill="none" aria-hidden="true">' +
-            '<path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" ' +
-            'd="M5 0C2.239 0 0 2.239 0 5c0 3.75 5 9 5 9s5-5.25 5-9c0-2.761-2.239-5-5-5zm0 6.75' +
-            'A1.75 1.75 0 1 1 5 3.25a1.75 1.75 0 0 1 0 3.5z"/></svg>';
-
   function misc() {
     // the bundle stamps lang from its own locale; the content is Ukrainian
     if (document.documentElement.lang !== 'uk') document.documentElement.lang = 'uk';
@@ -27,29 +22,24 @@
     }
   }
 
-  function place() {
-    misc();
-    var btns = document.querySelectorAll('button.cta-button, a.cta-button');
-    for (var i = 0; i < btns.length; i++) {
-      var b = btns[i];
-      if (b.closest('.stage-module')) continue;               // hero CTA, not the header
-      var row = b.closest('.flex.items-center');
-      if (!row || row.querySelector('[data-gg="place"]')) continue;
-      var el = document.createElement('div');
-      el.setAttribute('data-gg', 'place');
-      el.className = CLS;
-      el.innerHTML = PIN + '<span>' + TEXT + '</span>';
-      row.insertBefore(el, b.parentElement === row ? b : b.closest('div'));
-    }
-  }
-
   var css = document.createElement('style');
   css.textContent = [
-    '[data-gg="place"]{display:none;align-items:center;gap:.5rem;margin-right:1.5rem;white-space:nowrap}',
-    '[data-gg="place"] svg{flex:0 0 auto}',
-    '@media (min-width:1024px){[data-gg="place"]{display:flex}}',
-    // header CTA matched to the hero CTA: same font size, same py-3.5 / px-7, sized to its text
-    '.sticky .cta-button{font-size:1.04rem!important;padding:.875rem 1.75rem!important;min-width:0!important;white-space:nowrap!important}',
+    // desktop only, like before; the pin is the same single-path icon, white like the
+    // header text, with the .5rem gap it had as an inline svg
+    '@media (min-width:1024px){',
+    '  .sticky .flex.items-center:has(> .cta-button) > .cta-button{order:2}',
+    '  .sticky .flex.items-center:has(> .cta-button)::after{content:"ЖК на Счастливому · Рівне";order:1;'
+    + 'display:block;margin-right:1.5rem;padding-left:calc(10px + .5rem);white-space:nowrap;'
+    + 'font-family:var(--font-sofia-sans-extra-condensed,sans-serif),sans-serif;font-weight:700;'
+    + 'font-size:.875rem;line-height:2rem;letter-spacing:.25rem;text-transform:uppercase;color:#fff;'
+    + 'background:url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2710%27 height=%2714%27 viewBox=%270 0 10 14%27%3E%3Cpath fill=%27%23fff%27 fill-rule=%27evenodd%27 d=%27M5 0C2.239 0 0 2.239 0 5c0 3.75 5 9 5 9s5-5.25 5-9c0-2.761-2.239-5-5-5zm0 6.75A1.75 1.75 0 1 1 5 3.25a1.75 1.75 0 0 1 0 3.5z%27/%3E%3C/svg%3E") left center/10px 14px no-repeat}',
+    '}',
+    // header CTA on the same step as the menu items next to it (lg:text-1.75xl = 1.375rem);
+    // the hero CTA carries the same size, so both buttons on the page read as one class
+    // width:auto — the bundle pins the button to w-44 (176px) on a phone; with the bigger
+    // label and px-7 the text no longer fit that box and spilled out to the right, 19px
+    // off centre. Sized to its label, the padding is equal on both sides again.
+    '.sticky .cta-button{font-size:1.375rem!important;padding:.875rem 1.75rem!important;min-width:0!important;width:auto!important;white-space:nowrap!important}',
     // the countdown banner above the header is yellow now, so the header CTA goes white;
     // hover keeps the site's own invert (black fill, light label)
     '.sticky .cta-button{background-color:#fff!important;border-color:#fff!important;color:#000!important}',
@@ -60,17 +50,20 @@
     '@media (min-width:1024px){',
     '  .sticky .navi-brand-logo{flex:0 0 auto}',
     '  .sticky .navi-brand-logo button{width:3rem!important;min-width:3rem!important;height:3rem!important}',
-    '  .sticky .flex.w-full.justify-center{justify-content:flex-start!important;padding-left:5rem}',
+    // the gap after the logo is the same step the menu items use between themselves
+    // (their own lg:mr-8 = 2rem), so the row reads as one evenly spaced group
+    '  .sticky .flex.w-full.justify-center{justify-content:flex-start!important;padding-left:2rem}',
     '}'
   ].join('\n');
   (document.head || document.documentElement).appendChild(css);
 
-  place();
-  document.addEventListener('DOMContentLoaded', place);
-  window.addEventListener('load', place);
-  var mo = new MutationObserver(place);
-  mo.observe(document.documentElement, { childList: true, subtree: true });
-  setTimeout(function () { mo.disconnect(); place(); }, 10000);
+  // not before React has taken over the server HTML (see media/ready.js)
+  (window.ggReady || function (f) { f(); })(function () {
+    misc();
+    var mo = new MutationObserver(misc);
+    mo.observe(document.documentElement, { childList: true, subtree: true });
+    setTimeout(function () { mo.disconnect(); misc(); }, 10000);
+  });
 
   // NOTE: <html lang> stays 'de' in the live DOM — the Next bundle rewrites it from
   // its own locale on every render, and switching the locale to 'uk' blanks the page

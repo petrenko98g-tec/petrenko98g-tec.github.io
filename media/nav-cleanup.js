@@ -25,12 +25,15 @@
     });
   }
 
-  clean();
-  document.addEventListener('DOMContentLoaded', clean);
-  window.addEventListener('load', clean);
+  // not before React has taken over the server HTML (see media/ready.js)
+  (window.ggReady || function (f) { f(); })(function () {
+    clean();
+    document.addEventListener('DOMContentLoaded', clean);
+    window.addEventListener('load', clean);
 
-  // the nav is re-rendered by the framework — keep the entries out
-  var mo = new MutationObserver(function () { clean(); });
-  mo.observe(document.documentElement, { childList: true, subtree: true });
-  setTimeout(function () { mo.disconnect(); clean(); }, 10000);
+    // the nav is re-rendered by the framework — keep the entries out
+    var mo = new MutationObserver(function () { clean(); });
+    mo.observe(document.documentElement, { childList: true, subtree: true });
+    setTimeout(function () { mo.disconnect(); clean(); }, 10000);
+  });
 })();
