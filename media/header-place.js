@@ -10,7 +10,25 @@
    sm size (.875rem); before, the element took its size from overrides that only
    index.html loads, so on the other pages it rendered at the raw 2rem, 508px wide. */
 (function () {
+  // the video control in the hero is the one label the bundle still prints in German
+  var LABELS = {
+    'Video anhalten': 'Зупинити відео',
+    'Video abspielen': 'Відтворити відео',
+    'Video starten': 'Відтворити відео'
+  };
+
+  function labels() {
+    [].forEach.call(document.querySelectorAll('button, a'), function (el) {
+      var t = (el.textContent || '').trim();
+      var uk = LABELS[t];
+      if (uk) el.textContent = uk;
+      var a = el.getAttribute('aria-label');
+      if (a && LABELS[a]) el.setAttribute('aria-label', LABELS[a]);
+    });
+  }
+
   function misc() {
+    labels();
     // the bundle stamps lang from its own locale; the content is Ukrainian
     if (document.documentElement.lang !== 'uk') document.documentElement.lang = 'uk';
     // the waitlist module's jumpmark id is its label; give it a plain anchor for the CTAs
@@ -39,7 +57,12 @@
     // width:auto — the bundle pins the button to w-44 (176px) on a phone; with the bigger
     // label and px-7 the text no longer fit that box and spilled out to the right, 19px
     // off centre. Sized to its label, the padding is equal on both sides again.
-    '.sticky .cta-button{font-size:1.375rem!important;padding:.875rem 1.75rem!important;min-width:0!important;width:auto!important;white-space:nowrap!important}',
+    '.sticky .cta-button{min-width:0!important;width:auto!important;white-space:nowrap!important}',
+    // phone: the label runs on the card-title step and the box keeps the site's own
+    // py-3.5; the 1.375rem version below belongs to the desktop row, where it matches
+    // the menu items beside it
+    '@media (max-width:1023px){.sticky .cta-button{font-size:1.125rem!important;padding:.625rem 1rem!important;line-height:1.5rem!important}}',
+    '@media (min-width:1024px){.sticky .cta-button{font-size:1.375rem!important;padding:.875rem 1.75rem!important}}',
     // the countdown banner above the header is yellow now, so the header CTA goes white;
     // hover keeps the site's own invert (black fill, light label)
     '.sticky .cta-button{background-color:#fff!important;border-color:#fff!important;color:#000!important}',

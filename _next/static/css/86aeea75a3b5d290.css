@@ -125,3 +125,19 @@ section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .rte-style strong
 /* one slide in the gallery: nothing to page through, so the arrows go too */
 .stage-slider .swiper:not(:has(.swiper-slide + .swiper-slide)) ~ .stage__slider-button,
 .stage-slider:not(:has(.swiper-slide + .swiper-slide)) .stage__slider-button{display:none!important}
+
+/* Phone: the hero is taller than the screen minus the sticky header, and the module
+   pins its section to that height — so the centred content spilled over the top and
+   the headline slid under the header. On a phone the hero grows with its content. */
+@media (max-width:767px){
+  .stage-module:has([data-gg="form"]) section{height:auto!important}
+  .stage-module:has([data-gg="form"]) .max-h-screen{max-height:none!important}
+  .stage-module:has([data-gg="form"]) section > div.z-1{height:auto!important;padding-top:3.5rem!important}
+  .stage-module:has([data-gg="form"]) .stage-module-headline-content-group{height:auto!important}
+}
+
+/* Headlines: the clone's leading (1.25 of the size) leaves the uppercase Gravitas
+   lines floating apart in Ukrainian, where the words are long and wrap often.
+   One value for every headline, tight enough to read as a block and still clear of
+   the descenders in Ц, Д, Щ. */
+.headline-group{line-height:1.1!important}

@@ -114,11 +114,19 @@
     // (grid-rows-countdownMobileNoCTA: 2fr 1fr), the digits span both columns, and the
     // two texts sit side by side with the site's gap-4 (1rem) between them.
     '@media (max-width:767px){',
-    '  [data-gg="countdown"]{grid-template-columns:auto auto;grid-template-rows:2fr 1fr;'
+    '  [data-gg="countdown"]{grid-template-columns:auto auto;grid-template-rows:auto auto;'
     + 'justify-content:center;column-gap:1rem}',
     '  [data-gg="countdown"] > div:nth-child(2){grid-column:1 / -1;grid-row:1}',
     '  [data-gg="countdown"] > h4{grid-column:1;grid-row:2;padding-left:0;padding-right:0}',
     '  [data-gg="countdown"] > div:nth-child(3){grid-column:2;grid-row:2;align-self:center}',
+    '}',
+    // phone: the banner eats a quarter of the screen at the site's own digit size, so the
+    // digits and both texts drop a step and the box keeps a tighter vertical padding
+    '@media (max-width:639px){',
+    '  [data-gg="countdown"]{padding-top:.5rem!important;padding-bottom:.5rem!important;row-gap:0}',
+    '  [data-gg="countdown"] [data-u]{font-size:1.75rem!important;line-height:2rem!important}',
+    '  [data-gg="countdown"] [data-u] + *{font-size:.625rem!important;line-height:1rem!important}',
+    '  [data-gg="countdown"] h4,[data-gg="countdown"] a{font-size:1rem!important;line-height:1.5rem!important}',
     '}',
     '@media (min-width:640px) and (max-width:1023px){',
     '  [data-gg="countdown"] [data-u]{font-size:2.5rem!important;line-height:2.5rem!important}',
