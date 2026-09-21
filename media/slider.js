@@ -61,6 +61,9 @@
     // Our phone row shows a card plus a sliver of the next one, so 90vw is wider than
     // the card and the text ran over its neighbour. It follows the card instead.
     '@media (max-width:699px){.slider-module .swiper-slide .w-90vw{width:100%!important}}',
+    // the module's own phone controls (a dot between two 7px arrows) are dropped —
+    // the row is swiped, and the marks only added noise under the headline
+    '[aria-label="Mobile slider navigation"]{display:none!important}',
     // Every grid row (the shoutout cards and the price cards): the card body carries the
     // module's lg:-translate-y-16 / lg:-mb-16, which lifts it 64px into the block above.
     // Here a text block sits above each row, so the lift would cover its text — dropped.
