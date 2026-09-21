@@ -39,7 +39,7 @@ section:not(:has(img)):not(:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "
 @media (min-width:1280px){section:not(:has(img)):not(:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "])) .image-text-teaser-module:has(>div:empty){padding-left:13rem!important;padding-right:13rem!important}}
 
 /* Intro overlay rebrand (see media/intro-logo.js). Kept in this <head> stylesheet so it
-   holds from the very first paint: the Gold's Gym logo video stays in the markup (its
+   holds from the very first paint: the build’s own logo video stays in the markup (its
    load/ended events drive the site's intro state) but is never shown, and our logo is
    drawn in the same black panel with the flip-in used for the previous preloader. As a
    pseudo-element it adds nothing to React's markup, so hydration keeps the overlay. */
@@ -48,7 +48,7 @@ div.z-50:has(video)>div{perspective:800px}
 @keyframes ggPreIn{from{transform:rotateX(-90deg) translateY(100%)}to{transform:rotateX(0deg) translateY(0)}}
 div.z-50:has(video)>div::after{content:"";position:absolute;top:50%;left:50%;width:min(12rem,40vw);aspect-ratio:1/1;margin:-3rem 0 0 calc(min(12rem,40vw)/-2);background:url(../../../media/logo-icon-yellow.png) center/contain no-repeat;transform-style:preserve-3d;backface-visibility:hidden;animation:ggPreIn .85s cubic-bezier(.215,.61,.355,1) both}
 
-/* The light sections are bg-transparent: golds-gym.de leaves the page to the browser's
+/* The light sections are bg-transparent: the base build leaves the page to the browser's
    default white canvas. Anywhere that canvas is not white — this site inside the preview
    frame, a Responsively webview, a browser in dark mode — they turned black. The page
    now paints its own white, the site's bg-white value. */
@@ -61,7 +61,7 @@ html{background-color:rgb(255 255 255)}
    (bg-white, text-black); the card keeps its ci-yellow border, and the titles are made
    black in the data (shoutoutShoutoutHeadlineGroup.color). The subline has no colour of
    its own and follows the card. Scoped to grids whose cards carry a subline: ours do,
-   Gold's Gym's price cards don't. */
+   the reference price cards don’t. */
 .grid-module:has(.shoutout-teaser p.tracking-subline){background-color:rgb(255 255 255)}
 .grid-module:has(.shoutout-teaser p.tracking-subline) .shoutout-teaser > div{background-color:rgb(255 255 255)}
 .grid-module:has(.shoutout-teaser p.tracking-subline) .shoutout-teaser .text-white{color:rgb(0 0 0)}

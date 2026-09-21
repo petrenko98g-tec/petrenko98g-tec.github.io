@@ -1,6 +1,6 @@
 /* Countdown banner.
 
-   golds-gym.de ships this as a React component, but our copy of the bundle does not
+   the base build ships this as a React component, but our copy of the bundle does not
    contain it: when the site was cloned the banner was switched off by its dates, so
    Next never loaded that chunk. Every CSS class it needs is still in the stylesheet,
    so the markup below is copied verbatim from the live page (classes, structure,
@@ -29,7 +29,7 @@
 
 
   // Where the banner goes.
-  // With the intro overlay (home page): as on golds-gym.de, first child of the sticky
+  // With the intro overlay (home page): as in the base build, first child of the sticky
   // header wrapper, so it sits above the menu and stays pinned with it. That wrapper is
   // React's markup, so the banner is added after hydration — the overlay covers it.
   // Without the overlay nothing would cover a late banner, and adding it after hydration

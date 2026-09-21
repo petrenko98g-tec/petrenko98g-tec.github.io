@@ -1,5 +1,5 @@
 /* «Обери свій формат» — the three format cards in the style of the offer box on
-   golds-gym.de/studio/berlin (the white «Herbst Deal» box): title, big price with its
+   the reference offer box given for this block: title, big price with its
    period, a check-mark list, the yellow button and a small note under it.
 
    That box belongs to the split-text teaser, whose chunk (1988) is not in the clone, so

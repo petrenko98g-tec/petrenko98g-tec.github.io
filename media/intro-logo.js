@@ -5,7 +5,7 @@
    flips initStageAnimation2 — the flag every stage module waits on for its reveal.
    Measured on this clone: hero reveal 2000-2715ms, overlay exit 3600-5300ms.
 
-   So the Gold's Gym logo video is only hidden, and our logo sits in the same black
+   So the build’s own logo video is only hidden, and our logo sits in the same black
    panel with the flip-in already used for the previous preloader. Both are done in the
    stylesheet (_next/static/css/…, loaded in <head>), not here: this file runs at the end
    of the body, so anything it did to the overlay came after the first paint — and an

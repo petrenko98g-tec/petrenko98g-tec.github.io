@@ -1,13 +1,13 @@
 /* Local photos inside next/image cards.
 
-   The app configures next/image with the cloudinary loader and the path
-   https://content.rsggroup.com/image/upload/, so every src is rewritten into that host —
-   a file of ours (media/…) ends up as .../image/upload/<transforms>/media/….jpg and 404s.
-   The plain <img> blocks (the image-text teaser) keep the path as written, only next/image
-   does this. Here the loader's prefix is taken back off: the src (and the srcset it built)
-   is pointed at the file itself. */
+   The app configures next/image with a cloudinary loader pointed at a remote image host,
+   so every src is rewritten onto that host — a file of ours (media/…) ends up as
+   .../image/upload/<transforms>/media/….jpg and 404s. The plain <img> blocks (the
+   image-text teaser) keep the path as written, only next/image does this. Here the
+   loader's prefix is taken back off: the src (and the srcset it built) is pointed at
+   the file itself. */
 (function () {
-  var RE = /^https:\/\/content\.rsggroup\.com\/image\/upload\/[^?]*?\/(media\/[^?]+)$/;
+  var RE = /^https?:\/\/[^/]+\/image\/upload\/[^?]*?\/(media\/[^?]+)$/;
 
   function fix() {
     [].forEach.call(document.images, function (img) {
