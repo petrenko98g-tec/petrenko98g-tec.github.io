@@ -141,3 +141,25 @@ section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .rte-style strong
    One value for every headline, tight enough to read as a block and still clear of
    the descenders in Ц, Д, Щ. */
 .headline-group{line-height:1.1!important}
+
+/* Phone: the clone sizes some text blocks at 90vw, which is wider than the padded
+   column they sit in (24px each side), so their last words ran past the edge and,
+   inside the carousel, over the next card. They follow their column instead. */
+@media (max-width:699px){main .w-90vw{width:100%!important}}
+
+/* Phone: the hero's content column is shrink-to-fit, so it took the width of the
+   longest headline line instead of the padded column — the last word sat over the
+   right edge. Held to the column, the headline wraps where it should. */
+@media (max-width:767px){
+  .stage-module-headline-content-group > div{width:100%;max-width:100%}
+  .stage-module-headline-content-group .headline-group{max-width:100%}
+  .stage-module-headline-content-group *{max-width:100%}
+  /* the same shrink-to-fit trap in the section headlines: the wrapping row took the
+     width of its longest line and pushed the last word past the column */
+  .headline-group,.headline-group > div{max-width:100%}
+}
+
+/* Narrow phones: single long Ukrainian words (спроєктувала, єдиноборств) are wider
+   than the 342px column at the 2rem headline step and hung over the edge. One step
+   down on the scale (1.75rem) and the longest word fits. */
+@media (max-width:400px){.headline-group{font-size:1.75rem!important}}

@@ -57,6 +57,10 @@
     '.slider-module .slider-button{display:none!important}',
     // phone: the flip-card carousel's inset (see fit() in apply)
     '@media (max-width:699px){.slider-module .swiper{margin-left:1.5rem;margin-right:1.5rem}}',
+    // the card copy carries the module's own w-90vw, written for a full-width slide.
+    // Our phone row shows a card plus a sliver of the next one, so 90vw is wider than
+    // the card and the text ran over its neighbour. It follows the card instead.
+    '@media (max-width:699px){.slider-module .swiper-slide .w-90vw{width:calc(100% - 1.5rem)!important}}',
     // Every grid row (the shoutout cards and the price cards): the card body carries the
     // module's lg:-translate-y-16 / lg:-mb-16, which lifts it 64px into the block above.
     // Here a text block sits above each row, so the lift would cover its text — dropped.
