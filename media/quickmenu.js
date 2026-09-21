@@ -71,6 +71,16 @@
     '#gg-qm .qm-panel p{margin:0 0 10px}',
     '#gg-qm .qm-panel p:last-child{margin-bottom:0}',
     '#gg-qm .qm-panel a{color:#0D0D0D;text-decoration:underline}',
+    // Phone: the widget sits in the very corner and takes less room, and it stays hidden
+    // while the first screen is up — there it would land on the hero's phone field. It
+    // fades in once the page is scrolled past the hero (see the scroll handler below).
+    '@media (max-width:767px){',
+    '  #gg-qm{bottom:0;opacity:0;pointer-events:none;transition:opacity .3s ease}',
+    '  #gg-qm.qm-shown{opacity:1;pointer-events:auto}',
+    '  #gg-qm .qm-btn{min-width:56px;padding:10px 4px;gap:4px}',
+    '  #gg-qm .qm-icon svg{height:20px}',
+    '  #gg-qm .qm-name{font-size:8px}',
+    '}',
     '@media (max-width:640px){#gg-qm .qm-panel{right:60px;transform:translateX(calc(100% + 60px));padding:18px 20px;min-width:220px}#gg-qm .qm-panel.active{transform:translate(0)}#gg-qm .qm-btn{min-width:60px;padding:12px 4px}}'
   ].join('\n');
 
@@ -124,6 +134,15 @@
     root.appendChild(panel);
     root.appendChild(nav);
     document.body.appendChild(root);
+
+    // phone: hold the widget back until the hero is scrolled past (see the CSS above)
+    var shown = function () {
+      var past = window.scrollY > window.innerHeight * 0.6;
+      root.classList.toggle('qm-shown', past);
+    };
+    shown();
+    window.addEventListener('scroll', shown, { passive: true });
+    window.addEventListener('resize', shown);
   }
 
   build();

@@ -396,7 +396,12 @@
     });
 
     // started when the section comes into view, stopped when it leaves (see autoplay)
-    var play = autoplay(el, function () { sw.slideNext(); });
+    // this build runs the slider without Swiper's loop, so at the last snap slideNext()
+    // does nothing and the row is left parked at the end — on a phone that reads as an
+    // empty band. Wrap by hand: past the last card the carousel goes back to the first.
+    var play = autoplay(el, function () {
+      if (sw.isEnd) sw.slideTo(0); else sw.slideNext();
+    });
     sw.on('touchStart', play.stop);
     sw.on('touchEnd', function () { play.start(STEP); });
   }
