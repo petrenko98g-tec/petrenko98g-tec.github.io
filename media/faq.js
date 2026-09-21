@@ -24,9 +24,9 @@
            + 'leading-5.5 w-full rte-clear-p';
 
   function build() {
-    // found by the block's jumpmark (jumpmarkLabel "App" in the data), not by its
+    // found by the block's jumpmark (jumpmarkLabel "Питання" in the data), not by its
     // headline, so a new headline does not switch the accordion off
-    var mark = document.getElementById('App');
+    var mark = document.getElementById('Питання') || document.getElementById('App');
     var sec = mark && mark.closest('section');
     var mods = sec ? [sec.querySelector('.image-text-teaser-module')] : [];
     for (var i = 0; i < mods.length; i++) {

@@ -79,7 +79,7 @@ main > main.relative > :not(:last-child){margin-bottom:-1px}
 
 @media (max-width:767px){section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .image-text-teaser-module>div:empty{display:none}}
 /* footer "Увімкни життя" band on the brand yellow (the site's bg-ci-yellow) */
-.footer .footer-top-elements{background-color:rgb(255 221 0)}
+.footer .footer-top-elements{display:none}
 /* footer headline in two lines, "Запишись" / "у вейт-лист" (a line break in the text, no
    wrapping inside the second line): the paragraph takes its longest line's width and the
    column's own items-center centres it. At 7.5rem that line needs 1059px, so the step
@@ -91,3 +91,37 @@ main > main.relative > :not(:last-child){margin-bottom:-1px}
 @media (min-width:576px){section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .image-text-teaser-module{padding-top:2.5rem!important;padding-bottom:2.5rem!important}}
 @media (min-width:768px){section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .image-text-teaser-module{padding-top:3rem!important;padding-bottom:3rem!important}}
 @media (min-width:1440px){section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .image-text-teaser-module{padding-top:4rem!important;padding-bottom:4rem!important}}
+/* waitlist block on the brand yellow (bg-ci-yellow), with the perk titles in black instead of the copy's yellow strong */
+section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]){background-color:rgb(255 221 0)}
+section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .rte-style strong{color:rgb(107 107 107)!important}
+
+/* White strip under a stage block. The stage slide is two pixels taller than the viewport
+   (its own inline height), while the parallax image is pinned with position:fixed and
+   height:100% — so the last two pixels of the slide are not covered and the page's white
+   shows through as a line, and it slides in and out while scrolling. Two extra pixels on
+   the image cover the slide; object-fit:cover crops them away. */
+.stage-module .swiper-slide picture img{height:calc(100% + 2px)!important}
+
+/* FAQ block: the section container's own vertical steps (py-8 sm:py-10 md:py-12 xl:py-16) instead of the teaser's !py-8 */
+@media (min-width:576px){section:has(>[id="\41f \438 \442 \430 \43d \43d \44f "]) .image-text-teaser-module{padding-top:2.5rem!important;padding-bottom:2.5rem!important}}
+@media (min-width:768px){section:has(>[id="\41f \438 \442 \430 \43d \43d \44f "]) .image-text-teaser-module{padding-top:3rem!important;padding-bottom:3rem!important}}
+@media (min-width:1440px){section:has(>[id="\41f \438 \442 \430 \43d \43d \44f "]) .image-text-teaser-module{padding-top:4rem!important;padding-bottom:4rem!important}}
+
+/* Gallery arrows: two strokes meeting in a point instead of the long shafted arrow.
+   Same 2px stroke and currentColor as the button's own ring. */
+.stage__slider-button > svg{display:none}
+/* no ring around them — the strokes alone */
+.stage__slider-button{border:0!important}
+/* the "previous" button is the same mark: the site already turns that button 180deg */
+.stage__slider-button:after{content:"";width:1.25rem;height:1.25rem;border-top:3px solid currentColor;border-right:3px solid currentColor;transform:rotate(45deg);margin-left:-.375rem}
+
+/* gallery controls on the brand yellow: the dots back in place (the site already
+   paints the active one #FFDD00 — the rest get the same colour, dimmed) and the two
+   arrows in the same yellow, since the chevrons are drawn with currentColor */
+.stage-slider .swiper-pagination-bullet{background:rgb(255 221 0);opacity:.35}
+.stage-slider .swiper-pagination-bullet-active{opacity:1}
+.stage__slider-button{color:rgb(255 221 0)!important}
+
+/* one slide in the gallery: nothing to page through, so the arrows go too */
+.stage-slider .swiper:not(:has(.swiper-slide + .swiper-slide)) ~ .stage__slider-button,
+.stage-slider:not(:has(.swiper-slide + .swiper-slide)) .stage__slider-button{display:none!important}
