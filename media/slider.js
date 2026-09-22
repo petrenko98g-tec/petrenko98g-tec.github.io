@@ -64,6 +64,15 @@
     // the module's own phone controls (a dot between two 7px arrows) are dropped —
     // the row is swiped, and the marks only added noise under the headline
     '[aria-label="Mobile slider navigation"]{display:none!important}',
+    // Dot row above a carousel: the gallery's marks (#FFDD00, the active one solid).
+    // On the white bands a dimmed yellow would disappear, so the idle dots are the
+    // page's own ink at 20%.
+    '[data-gg="dots"]{display:flex;justify-content:center;gap:.5rem;margin:0 0 1.5rem}',
+    '[data-gg="dots"] button{width:.5rem;height:.5rem;padding:0;border:0;border-radius:9999px;'
+      + 'background:rgba(0,0,0,.2);cursor:pointer;transition:background .25s ease,transform .25s ease}',
+    '[data-gg="dots"] button[aria-current="true"]{background:rgb(255 221 0);transform:scale(1.25)}',
+    '[data-gg="dots"][data-on-dark] button{background:rgba(255,255,255,.28)}',
+    '[data-gg="dots"][data-on-dark] button[aria-current="true"]{background:rgb(255 221 0)}',
     // Every grid row (the shoutout cards and the price cards): the card body carries the
     // module's lg:-translate-y-16 / lg:-mb-16, which lifts it 64px into the block above.
     // Here a text block sits above each row, so the lift would cover its text — dropped.
@@ -301,15 +310,20 @@
         if (cs.length < 2) return 0;
         return cs[1].getBoundingClientRect().left - cs[0].getBoundingClientRect().left;
       }
-      // wrapped before the step, and only when the step would run past the copy, so the
-      // strip never has to jump while it is moving
+      // The wrap happens after the step, and only once the strip has scrolled a whole copy
+      // of the set: at that point the cards on screen are the clones, so subtracting the
+      // period puts the identical originals in their place and nothing moves on screen.
+      // (Wrapping before the step — while the originals were still in view — jumped the
+      // row back four cards in plain sight.)
       function step() {
         var d = stride(), p = period();
         if (!d || !p) return;
-        if (row.scrollLeft + d >= p) row.scrollLeft -= p;
         row.__ggSmooth = true;
         row.scrollBy({ left: d, behavior: 'smooth' });
-        setTimeout(function () { row.__ggSmooth = false; }, 800);
+        setTimeout(function () {
+          row.__ggSmooth = false;
+          if (row.scrollLeft >= p) row.scrollLeft -= p;
+        }, 800);
       }
       var play = autoplay(row, step);
       row.addEventListener('pointerdown', play.stop);
@@ -351,8 +365,62 @@
     });
   }
 
+  // How many cards a carousel holds is invisible until you drag it, so each row gets the
+  // gallery's dot marks above it: one per card, the current one solid yellow, click to jump.
+  function dots(el) {
+    var sw = el.swiper;
+    if (!sw || el.__ggDots) return;
+    // a looped carousel rotates its slides and numbers them; a plain one has no numbers,
+    // and then the slides themselves are the count
+    var count = 0;
+    [].forEach.call(sw.slides, function (s) {
+      var i = s.getAttribute('data-swiper-slide-index');
+      if (i == null) count += 1;
+      else count = Math.max(count, parseInt(i, 10) + 1);
+    });
+    if (count < 2) return;
+    el.__ggDots = true;
+
+    var row = document.createElement('div');
+    row.setAttribute('data-gg', 'dots');
+    // white text in the block means a dark ground: the idle dots go light instead
+    var tone = el.closest('.text-white, .bg-black, [class*="bg-gray"]');
+    if (tone) row.setAttribute('data-on-dark', '');
+    for (var i = 0; i < count; i++) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.setAttribute('aria-label', 'Картка ' + (i + 1));
+      b.addEventListener('click', (function (n) {
+        return function () { sw.slideToLoop ? sw.slideToLoop(n) : sw.slideTo(n); };
+      })(i));
+      row.appendChild(b);
+    }
+    // climb out of any row-flex ancestors, or the marks would sit beside the carousel
+    // instead of above it (the zone slider is a row from sm up)
+    var node = el.parentElement;
+    while (node.parentElement) {
+      var pd = getComputedStyle(node.parentElement);
+      if (pd.display !== 'flex' || pd.flexDirection.indexOf('column') === 0) break;
+      node = node.parentElement;
+    }
+    node.parentElement.insertBefore(row, node);
+
+    function mark() {
+      [].forEach.call(row.children, function (b, n) {
+        b.setAttribute('aria-current', n === sw.realIndex ? 'true' : 'false');
+      });
+    }
+    mark();
+    sw.on('slideChange', mark);
+    sw.on('transitionEnd', mark);
+  }
+
   function apply() {
     freeDrag();
+    // the zone slider, the three flip cards and the three-small row — the gallery keeps
+    // the module's own marks
+    [].forEach.call(document.querySelectorAll('.slider-module .swiper, .flip-card-slider .swiper, '
+      + 'section:has(.background-three-small-module-card-component) .swiper'), dots);
     fixSublineHover();
     dragScroll();
     stripLoop();
@@ -373,13 +441,38 @@
       var want = w >= 1024 ? 4 : ORIG;
       var center = w < 700 ? false : ORIG_CENTER;
       if (sw.params.slidesPerView !== want || sw.params.centeredSlides !== center) {
+        var at = sw.realIndex;
         sw.params.slidesPerView = want;
         sw.params.centeredSlides = center;
+        // The loop was built for the module's own slidesPerView. Left as it was, the
+        // rotation ran out of slides ahead of the row: one step did nothing and the
+        // wrap skipped the last cards (measured 8 → 8 → 2 at four per view). Rebuilt
+        // with a few spare slides it runs 0…10 and back to 0.
+        if (sw.params.loop && sw.loopDestroy && sw.loopCreate) {
+          sw.params.loopAdditionalSlides = 2;   // measured: more spares and the rotation skips a card
+          sw.loopDestroy();
+          sw.loopCreate();
+        }
         sw.update();
-        sw.slideTo(sw.activeIndex, 0);
+        if (sw.params.loop && sw.slideToLoop) sw.slideToLoop(at, 0);
+        else sw.slideTo(sw.activeIndex, 0);
       }
     }
+    function relayout() {
+      var at = sw.realIndex;
+      if (sw.params.loop && sw.loopDestroy && sw.loopCreate) {
+        sw.loopDestroy();
+        sw.loopCreate();
+      }
+      sw.update();
+      if (sw.params.loop && sw.slideToLoop) sw.slideToLoop(at, 0);
+    }
+
     fit();
+    // the module finishes its own init after ours, and a loop rebuilt too early came out
+    // one slide short — every sixth step then jumped two cards. Rebuilt once the module
+    // has settled, the row steps one card at a time.
+    setTimeout(relayout, 800);
     window.addEventListener('resize', fit);
 
     // Endless in the hand as well as on the timer. The loop in this build never moves the
