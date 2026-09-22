@@ -117,6 +117,13 @@ section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .cta-link:hover{b
   box-shadow:0px 12px 20px rgba(0,0,0,0.15);transition:background .25s ease,color .25s ease}
 .stage__slider-button:hover{background:#000;color:#fff}
 
+/* Card copy: the build sets the carousel and flip-card text at .875rem. Our sentences
+   are longer than the ones it was drawn for and read too small beside the 1.75rem card
+   titles, so they take the next step of the scale (1rem). */
+.slider-module .alice-carousel__slider-item__paragraph,
+.flip-card-slider .flipcard-description,
+.flip-card-slider .flipcard-fronttext-description{font-size:1rem!important;line-height:1.5rem!important}
+
 /* the dots under the photo stay the brand's: the active one solid, the rest dimmed */
 .stage-slider .swiper-pagination-bullet{background:rgb(255 221 0);opacity:.35}
 .stage-slider .swiper-pagination-bullet-active{opacity:1}

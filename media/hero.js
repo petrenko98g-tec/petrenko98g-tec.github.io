@@ -23,7 +23,7 @@
       p.setAttribute('data-hsc', 'para');
       // white-space keeps the line breaks the copy is written with
       // full white at the site's normal weight — the earlier 300/75% washed out over the photo
-      p.style.cssText = 'max-width:640px;font-size:1.125rem;font-weight:400;line-height:1.6;color:#fff;margin-top:20px;text-align:left;white-space:pre-line';
+      p.style.cssText = 'max-width:680px;font-size:1.375rem;font-weight:400;line-height:1.55;color:#fff;margin-top:20px;text-align:left;white-space:pre-line';
       p.textContent = PARA;
       headWrap.appendChild(p);
     } else if (existing && existing.textContent !== PARA) {
@@ -42,14 +42,14 @@
       // runs at the header's 1.375rem now, so the row needs the extra space
       box.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;max-width:560px';
       box.innerHTML =
-        '<input type="tel" placeholder="Твій номер телефону" style="flex:1;min-width:160px;background:#fff;color:#000;border:none;padding:14px 18px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box">' +
+        '<input type="tel" placeholder="Твій номер телефону" style="flex:1;min-width:160px;background:#fff;color:#000;border:none;padding:16px 20px;font-size:1.125rem;font-family:inherit;outline:none;box-sizing:border-box">' +
         '<button data-variant="primary" style="width:auto;flex:0 0 auto;white-space:nowrap;font-size:1.375rem;padding-left:1.75rem;padding-right:1.75rem" class="cta-button variant-primary text-center duration-250 ease-in-out font-sofia-sans-extra-condensed font-bold text-[1.3rem] leading-6.5 tracking-0.125 uppercase box-border py-3.5 text-black hover:text-ci-yellow bg-ci-yellow hover:bg-black border-2 border-ci-yellow hover:border-black stage-content__cta checkout-cta">' + label + '</button>';
       if (link) link.remove();
       holder.appendChild(box);
 
       var fine = document.createElement('p');
       fine.setAttribute('data-hsc', 'fine');
-      fine.style.cssText = 'font-size:.75rem;line-height:1.6;color:#fff;margin:12px 0 0;max-width:460px';
+      fine.style.cssText = 'font-size:.875rem;line-height:1.6;color:#fff;margin:12px 0 0;max-width:460px';
       fine.textContent = FINE;
       holder.appendChild(fine);
     }
@@ -84,13 +84,18 @@
     '@media (min-width:1280px){.stage-module .xl\\:px-52{padding-left:2.5rem!important;padding-right:2.5rem!important}}',
     // gap eyebrow -> headline: the site's mb-6 (24px) cut by 35%
     '.stage-module .tracking-subline.mb-6{margin-bottom:15.6px!important}',
-    // eyebrow / header location line, on the site's own small steps instead of loose
-    // decimals: text-xs .75rem and text-sm .875rem
+    // the line above the headline keeps the build's own steps (1.625rem, 2rem from sm),
+    // which is what carries it against a full-bleed photo; the same classes sit on the
+    // header's location line, where the small steps stay
     '.tracking-subline.text-2\\.75xl{font-size:.75rem!important}',
     '.tracking-subline.sm\\:text-3\\.5xl{font-size:.875rem!important}',
+    '.stage-module .tracking-subline.text-2\\.75xl{font-size:1.125rem!important}',
+    '@media (min-width:640px){.stage-module .tracking-subline.sm\\:text-3\\.5xl{font-size:1.25rem!important}}',
     '@media (max-width:640px){.cta-button.stage-content__cta.checkout-cta{width:100%!important}}',
-    // on a phone the written line breaks only make ragged half-lines — let the copy flow
-    '@media (max-width:640px){p[data-hsc="para"]{white-space:normal!important}}'
+    // on a phone the written line breaks only make ragged half-lines — let the copy flow,
+    // and the copy steps back down so it does not read as loud as the headline above it
+    '@media (max-width:640px){p[data-hsc="para"]{white-space:normal!important;',
+    '  font-size:1.125rem!important;line-height:1.6!important}}'
   ].join('\n');
   document.head.appendChild(css);
 
