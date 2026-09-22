@@ -68,6 +68,9 @@
     // On the white bands a dimmed yellow would disappear, so the idle dots are the
     // page's own ink at 20%.
     '[data-gg="dots"]{display:flex;justify-content:center;gap:.5rem;margin:0 0 1.5rem}',
+    // only on a phone, where one card fills the row and the rest are out of sight; from
+    // md up the row already shows several cards and the marks would only add noise
+    '@media (min-width:768px){[data-gg="dots"]{display:none}}',
     '[data-gg="dots"] button{width:.5rem;height:.5rem;padding:0;border:0;border-radius:9999px;'
       + 'background:rgba(0,0,0,.2);cursor:pointer;transition:background .25s ease,transform .25s ease}',
     '[data-gg="dots"] button[aria-current="true"]{background:rgb(255 221 0);transform:scale(1.25)}',
