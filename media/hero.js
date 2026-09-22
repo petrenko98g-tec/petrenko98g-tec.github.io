@@ -4,8 +4,11 @@
    in the server HTML as well. What is left here has no field of its own and is added
    after React renders, then re-added if React renders again. */
 (function () {
+  // broken by hand into four lines that step out from 311px to 450px at the copy's own
+  // size — the long middle sentence used to wrap and leave two words alone on a line
   var PARA = 'Для батьків, у яких немає часу.\n' +
-             'Тренуєшся, поки дитина в басейні поруч або в школі через критий перехід.\n' +
+             'Тренуєшся, поки дитина в басейні\n' +
+             'поруч або в школі через критий перехід.\n' +
              'Без няні, без розвозок, без відчуття провини.';
   var CTA = 'Хочу бути серед перших';
   var FINE = 'Отримай першим доступ до стартових умов клубу.';
@@ -23,7 +26,7 @@
       p.setAttribute('data-hsc', 'para');
       // white-space keeps the line breaks the copy is written with
       // full white at the site's normal weight — the earlier 300/75% washed out over the photo
-      p.style.cssText = 'max-width:680px;font-size:1.375rem;font-weight:400;line-height:1.55;color:#fff;margin-top:20px;text-align:left;white-space:pre-line';
+      p.style.cssText = 'max-width:29em;font-size:1.375rem;font-weight:400;line-height:1.55;color:#fff;margin-top:20px;text-align:left;white-space:pre-line';
       p.textContent = PARA;
       headWrap.appendChild(p);
     } else if (existing && existing.textContent !== PARA) {
@@ -95,7 +98,9 @@
     // on a phone the written line breaks only make ragged half-lines — let the copy flow,
     // and the copy steps back down so it does not read as loud as the headline above it
     '@media (max-width:640px){p[data-hsc="para"]{white-space:normal!important;',
-    '  font-size:1.125rem!important;line-height:1.6!important}}'
+    '  font-size:1.125rem!important;line-height:1.6!important;',
+    // the flowing copy evens its own lines out rather than dropping two words alone
+    '  text-wrap:balance}}'
   ].join('\n');
   document.head.appendChild(css);
 
