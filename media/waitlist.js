@@ -18,28 +18,7 @@
   ].join('\n');
   (document.head || document.documentElement).appendChild(css);
 
-  // The headline sits inside the copy column, which is half the block: at the section's
-  // own size a single word filled a line by itself. It is lifted into the module's grid
-  // instead, across both columns, so it keeps that size and breaks into whole phrases —
-  // the copy and the perks stay in their columns underneath.
-  function headline() {
-    var jump = document.getElementById('Вейт-лист');
-    var sec = jump && jump.closest('section');
-    var mod = sec && sec.querySelector('.image-text-teaser-module');
-    if (!mod || mod.querySelector('[data-hsc="wl-head"]')) return;
-    var h2 = mod.querySelector('h2.headline-group');
-    if (!h2) return;
-    var row = document.createElement('div');
-    row.setAttribute('data-hsc', 'wl-head');
-    // the copy column's own indents on both sides, so the headline starts on the
-    // same line as the text under it
-    row.className = 'md:col-span-2 md:pl-10 lg:pl-20 xl:pl-52 md:pr-10 lg:pr-20 xl:pr-52';
-    mod.insertBefore(row, mod.firstChild);
-    row.appendChild(h2);
-  }
-
   function place() {
-    headline();
     var jump = document.getElementById('Вейт-лист');
     var sec = jump && jump.closest('section');
     var mod = sec && sec.querySelector('.image-text-teaser-module');
