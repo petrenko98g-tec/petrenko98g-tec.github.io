@@ -13,14 +13,15 @@
    markup the stage uses. Replaying it means resetting those two inline values and
    letting the site's own transition run. Nothing new is animated here. */
 (function () {
-  var STEP = 3500;                                                   // pause between slides
-  var FIRST = 1000;                              // first move after the carousel shows up
+  var SLOWER = 2.5;             // every carousel on the page runs at this fraction of its old pace
+  var STEP = 3500 * SLOWER;              // pause between slides: long enough to read a card
+  var FIRST = STEP;               // the card a visitor lands on gets the same time as the rest
 
-  // One autoplay clock for both carousels. It runs only while the carousel is on screen:
-  // the first move comes FIRST ms after it appears (a full STEP there read as "starts
-  // late"), then one every STEP. Only a drag pauses it — the pointer merely resting on
-  // the cards used to stop it too, and in a preview the pointer is almost always there,
-  // so the carousel seemed not to start at all.
+  // One autoplay clock for both carousels. It runs only while the carousel is on screen,
+  // and the first move waits the same STEP as every other: the card the visitor lands on
+  // used to slide away while they were still reading its first line. Only a drag pauses
+  // it — the pointer merely resting on the cards used to stop it too, and in a preview
+  // the pointer is almost always there, so the carousel seemed not to start at all.
   function autoplay(target, step) {
     var kick = null, tick = null;
     function start(delay) {
@@ -440,9 +441,27 @@
     });
   }
 
+  // The gallery is the one carousel whose autoplay comes from Swiper itself (the module
+  // ships it with the delay from the page data). It is slowed by the same factor as the
+  // rows above it, so every carousel on the page gives two and a half times the reading
+  // time it used to.
+  function galleryPace() {
+    [].forEach.call(document.querySelectorAll('.swiper'), function (el) {
+      var sw = el.swiper;
+      if (!sw || !sw.autoplay || el.__hscPace) return;
+      var conf = sw.params.autoplay;
+      if (!conf || !conf.delay) return;
+      el.__hscPace = true;
+      conf.delay = Math.round(conf.delay * SLOWER);
+      if (sw.autoplay.stop) sw.autoplay.stop();
+      if (sw.autoplay.start) sw.autoplay.start();
+    });
+  }
+
   function apply() {
     freeDrag();
     galleryArrows();
+    galleryPace();
     // the zone slider, the three flip cards and the three-small row — the gallery keeps
     // the module's own marks
     [].forEach.call(document.querySelectorAll('.slider-module .swiper, .flip-card-slider .swiper, '
