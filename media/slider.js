@@ -64,10 +64,10 @@
     // the module's own phone controls (a dot between two 7px arrows) are dropped —
     // the row is swiped, and the marks only added noise under the headline
     '[aria-label="Mobile slider navigation"]{display:none!important}',
-    // Dot row above a carousel: the gallery's marks (#FFDD00, the active one solid).
+    // Dot row under a carousel: the gallery's marks (#FFDD00, the active one solid).
     // On the white bands a dimmed yellow would disappear, so the idle dots are the
     // page's own ink at 20%.
-    '[data-gg="dots"]{display:flex;justify-content:center;gap:.5rem;margin:0 0 1.5rem}',
+    '[data-gg="dots"]{display:flex;justify-content:center;gap:.5rem;margin:1.5rem 0 0}',
     // only on a phone, where one card fills the row and the rest are out of sight; from
     // md up the row already shows several cards and the marks would only add noise
     '@media (min-width:768px){[data-gg="dots"]{display:none}}',
@@ -369,7 +369,7 @@
   }
 
   // How many cards a carousel holds is invisible until you drag it, so each row gets the
-  // gallery's dot marks above it: one per card, the current one solid yellow, click to jump.
+  // gallery's dot marks under it: one per card, the current one solid yellow, click to jump.
   function dots(el) {
     var sw = el.swiper;
     if (!sw || el.__ggDots) return;
@@ -399,14 +399,14 @@
       row.appendChild(b);
     }
     // climb out of any row-flex ancestors, or the marks would sit beside the carousel
-    // instead of above it (the zone slider is a row from sm up)
+    // instead of under it (the zone slider is a row from sm up)
     var node = el.parentElement;
     while (node.parentElement) {
       var pd = getComputedStyle(node.parentElement);
       if (pd.display !== 'flex' || pd.flexDirection.indexOf('column') === 0) break;
       node = node.parentElement;
     }
-    node.parentElement.insertBefore(row, node);
+    node.parentElement.insertBefore(row, node.nextSibling);
 
     function mark() {
       [].forEach.call(row.children, function (b, n) {
