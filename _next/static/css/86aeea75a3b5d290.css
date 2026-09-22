@@ -163,3 +163,9 @@ section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .rte-style strong
    than the 342px column at the 2rem headline step and hung over the edge. One step
    down on the scale (1.75rem) and the longest word fits. */
 @media (max-width:400px){.headline-group{font-size:1.75rem!important}}
+
+/* Jumps from the menu landed with the section's first screenful under the sticky
+   header (the countdown bar plus the nav), so the headline was cut off. The page
+   now stops that much lower. */
+html{scroll-padding-top:13.75rem}
+@media (max-width:767px){html{scroll-padding-top:12.5rem}}

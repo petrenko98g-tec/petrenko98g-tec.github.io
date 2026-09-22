@@ -10,11 +10,16 @@
    sm size (.875rem); before, the element took its size from overrides that only
    index.html loads, so on the other pages it rendered at the raw 2rem, 508px wide. */
 (function () {
-  // the video control in the hero is the one label the bundle still prints in German
+  // the labels the bundle still prints in German: the hero's video control, the gallery
+  // arrows and the two skip links that a keyboard user hears first
   var LABELS = {
     'Video anhalten': 'Зупинити відео',
     'Video abspielen': 'Відтворити відео',
-    'Video starten': 'Відтворити відео'
+    'Video starten': 'Відтворити відео',
+    'Nächster Slide': 'Наступний кадр',
+    'Vorheriger Slide': 'Попередній кадр',
+    'Zum Hauptinhalt springen': 'Перейти до вмісту',
+    'Zum Footer springen': 'Перейти до підвалу'
   };
 
   function labels() {
@@ -27,8 +32,35 @@
     });
   }
 
+  // The hero's video control keeps its caption from the first render, so after a pause it
+  // still read "stop". The caption follows the video itself instead.
+  function videoLabel() {
+    var btn = document.querySelector('.stage-video-cta');
+    var vid = document.querySelector('.stage-module video');
+    if (!btn || !vid) return;
+    var sync = function () {
+      var t = vid.paused ? 'Відтворити відео' : 'Зупинити відео';
+      if (btn.textContent !== t) btn.textContent = t;
+      btn.setAttribute('aria-label', t);
+    };
+    sync();
+    if (!vid.__ggLabel) {
+      vid.__ggLabel = true;
+      vid.addEventListener('play', sync);
+      vid.addEventListener('pause', sync);
+      btn.addEventListener('click', function () { setTimeout(sync, 60); });
+    }
+  }
+
   function misc() {
     labels();
+    videoLabel();
+    // the video control swaps its own label back when it is pressed, after the observer
+    // below has gone quiet — so every click re-checks the labels
+    if (!document.__ggLabelClick) {
+      document.__ggLabelClick = true;
+      document.addEventListener('click', function () { setTimeout(labels, 0); }, true);
+    }
     // the bundle stamps lang from its own locale; the content is Ukrainian
     if (document.documentElement.lang !== 'uk') document.documentElement.lang = 'uk';
     // the waitlist module's jumpmark id is its label; give it a plain anchor for the CTAs
