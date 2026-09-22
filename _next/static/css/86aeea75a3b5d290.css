@@ -93,6 +93,17 @@ main > main.relative > :not(:last-child){margin-bottom:-1px}
 /* waitlist block on the brand yellow (bg-ci-yellow), with the perk titles in black instead of the copy's yellow strong */
 section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]){background-color:rgb(255 221 0)}
 section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .rte-style strong{color:rgb(107 107 107)!important}
+/* The block runs as two columns, so its headline has half the width the full-bleed
+   headlines have. At the section step (3rem) a single word filled a line on its own —
+   it takes the scale's 2rem from md up, the width at which the words pair up again. */
+@media (min-width:768px){
+  section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .headline-group
+  {font-size:2rem!important;line-height:1.15!important;max-width:29rem}
+  /* and it keeps that wrap on a wide screen instead of starting a line with the dash */
+}
+/* and the perks beside it read on a shorter measure than the column is wide */
+section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) [data-hsc="wl-right"] p{max-width:24em}
+
 /* its button hovers to white on black text: the module's own hover is the brand
    yellow, which on this yellow ground left the label alone on the page */
 section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .cta-link:hover{background-color:#fff!important;color:#000!important}
