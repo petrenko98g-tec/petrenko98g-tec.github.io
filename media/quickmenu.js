@@ -23,7 +23,7 @@
     { id: 'times', name: 'Графік', icon: 'clock', html:
       '<div class="qm-title">Графік роботи</div>' +
       '<p>Клуб відкривається скоро.</p>' +
-      '<p>Графік оголосимо перед відкриттям — вейт-лист дізнається першим.</p>' },
+      '<p>Точний графік з’явиться перед відкриттям — він буде у вейт-листі першим.</p>' },
     { id: 'social', name: 'Соцмережі', icon: 'social', html:
       '<div class="qm-title">Ми в мережі</div>' +
       '<p><a href="https://www.instagram.com/" target="_blank" rel="noopener">Instagram</a></p>' +
