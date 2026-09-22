@@ -73,7 +73,59 @@
     if (p !== null && (p === '' || /\.html?($|\?)/.test(p))) v.removeAttribute('poster');
   }
 
-  function run() { applyHero(); dropPoster(); }
+
+  /* The hero video is marked autoplay, but a browser can still leave it standing: a tab
+     that loads in the background never gets its first frame scheduled, a laptop on low
+     power refuses the start, and coming back to the tab does not always resume it. So
+     the start is asked for again — when the page becomes visible, when the video scrolls
+     into view, and at the visitor's first touch of the page, which is the one moment a
+     browser will never refuse.
+
+     Only the visitor may stop it for good: the module's own control sets the flag below,
+     and after that nothing here starts it again. */
+  var userStopped = false;
+
+  function keepPlaying() {
+    var v = document.querySelector('.stage-module video');
+    if (!v || v.__hscPlay) return;
+    v.__hscPlay = true;
+    // what a browser wants to see before it allows a start without a gesture
+    v.muted = true; v.defaultMuted = true; v.setAttribute('muted', '');
+    v.playsInline = true; v.setAttribute('playsinline', '');
+    v.setAttribute('autoplay', '');
+    v.loop = true;
+
+    function go() {
+      if (userStopped || !v.paused) return;
+      var p = v.play();
+      if (p && p.catch) p.catch(function () { /* still refused — the next event tries */ });
+    }
+
+    // the module's own stop/play control decides for good
+    document.addEventListener('click', function (e) {
+      var hit = e.target && e.target.closest && e.target.closest('.stage-video-cta');
+      if (!hit) return;
+      setTimeout(function () { userStopped = v.paused; }, 60);
+    }, true);
+
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) go();
+    });
+    ['canplay', 'loadeddata', 'stalled', 'suspend'].forEach(function (ev) {
+      v.addEventListener(ev, go);
+    });
+    ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(function (ev) {
+      window.addEventListener(ev, go, { once: true, passive: true });
+    });
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (rows) {
+        rows.forEach(function (r) { if (r.isIntersecting) go(); });
+      }, { threshold: 0.1 }).observe(v);
+    }
+    [0, 400, 1500, 4000].forEach(function (ms) { setTimeout(go, ms); });
+  }
+
+  function run() { applyHero(); dropPoster(); keepPlaying(); }
 
   var css = document.createElement('style');
   css.textContent = [
