@@ -95,8 +95,12 @@
     v.setAttribute('autoplay', '');
     v.loop = true;
 
+    // a click on the module's own control is not a gesture to start on: it is the
+    // visitor reaching for stop, and the module flips the state right after it
+    var onControl = false;
+
     function go() {
-      if (userStopped || !v.paused) return;
+      if (onControl || userStopped || !v.paused) return;
       var p = v.play();
       if (p && p.catch) p.catch(function () { /* still refused — the next event tries */ });
     }
@@ -105,7 +109,8 @@
     document.addEventListener('click', function (e) {
       var hit = e.target && e.target.closest && e.target.closest('.stage-video-cta');
       if (!hit) return;
-      setTimeout(function () { userStopped = v.paused; }, 60);
+      onControl = true;                       // this listener runs before the ones below
+      setTimeout(function () { userStopped = v.paused; onControl = false; }, 120);
     }, true);
 
     document.addEventListener('visibilitychange', function () {
@@ -114,8 +119,11 @@
     ['canplay', 'loadeddata', 'stalled', 'suspend'].forEach(function (ev) {
       v.addEventListener(ev, go);
     });
-    ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'].forEach(function (ev) {
-      window.addEventListener(ev, go, { once: true, passive: true });
+    // a touch is the one context a browser never refuses, so these stay on until the
+    // video actually runs — on a phone in low power mode the first tap is the start
+    var gestures = ['pointerdown', 'touchstart', 'touchend', 'click', 'keydown', 'wheel', 'scroll'];
+    gestures.forEach(function (ev) {
+      window.addEventListener(ev, go, { passive: true });
     });
     if (window.IntersectionObserver) {
       new IntersectionObserver(function (rows) {
@@ -124,6 +132,20 @@
     }
     [0, 400, 1500, 4000].forEach(function (ms) { setTimeout(go, ms); });
   }
+
+
+  // Before anything else: the video is in the server HTML, and Safari makes up its mind
+  // about starting it as soon as the file's metadata arrives — long before React hydrates
+  // and the tweaks below run. So the flags it asks for are set the moment this file is
+  // parsed, and the first start is asked for right there.
+  (function early() {
+    var v = document.querySelector('.stage-module video');
+    if (!v) { return document.addEventListener('DOMContentLoaded', early); }
+    v.muted = true; v.defaultMuted = true; v.setAttribute('muted', '');
+    v.playsInline = true; v.setAttribute('playsinline', '');
+    var p = v.play();
+    if (p && p.catch) p.catch(function () { /* the watchers in keepPlaying ask again */ });
+  })();
 
   function run() { applyHero(); dropPoster(); keepPlaying(); }
 
