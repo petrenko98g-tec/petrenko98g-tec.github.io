@@ -93,6 +93,9 @@ main > main.relative > :not(:last-child){margin-bottom:-1px}
 /* waitlist block on the brand yellow (bg-ci-yellow), with the perk titles in black instead of the copy's yellow strong */
 section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]){background-color:rgb(255 221 0)}
 section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .rte-style strong{color:rgb(107 107 107)!important}
+/* its button hovers to white on black text: the module's own hover is the brand
+   yellow, which on this yellow ground left the label alone on the page */
+section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .cta-link:hover{background-color:#fff!important;color:#000!important}
 
 /* White strip under a stage block. The stage slide is two pixels taller than the viewport
    (its own inline height), while the parallax image is pinned with position:fixed and
@@ -106,20 +109,17 @@ section:has(>[id="\412 \435 \439 \442 -\43b \438 \441 \442 "]) .rte-style strong
 @media (min-width:768px){section:has(>[id="\41f \438 \442 \430 \43d \43d \44f "]) .image-text-teaser-module{padding-top:3rem!important;padding-bottom:3rem!important}}
 @media (min-width:1440px){section:has(>[id="\41f \438 \442 \430 \43d \43d \44f "]) .image-text-teaser-module{padding-top:4rem!important;padding-bottom:4rem!important}}
 
-/* Gallery arrows: two strokes meeting in a point instead of the long shafted arrow.
-   Same 2px stroke and currentColor as the button's own ring. */
-.stage__slider-button > svg{display:none}
-/* no ring around them — the strokes alone */
-.stage__slider-button{border:0!important}
-/* the "previous" button is the same mark: the site already turns that button 180deg */
-.stage__slider-button:after{content:"";width:1.25rem;height:1.25rem;border-top:3px solid currentColor;border-right:3px solid currentColor;transform:rotate(45deg);margin-left:-.375rem}
+/* Gallery arrows: the round button the card rows carry — a white disc with the
+   chevron in the page's ink, turning black on hover — in place of the long shafted
+   arrow drawn straight on the photo. The mark itself is swapped in by
+   media/slider.js, so both rows show the very same button. */
+.stage__slider-button{border:0!important;background:#fff;color:#000;
+  box-shadow:0px 12px 20px rgba(0,0,0,0.15);transition:background .25s ease,color .25s ease}
+.stage__slider-button:hover{background:#000;color:#fff}
 
-/* gallery controls on the brand yellow: the dots back in place (the site already
-   paints the active one #FFDD00 — the rest get the same colour, dimmed) and the two
-   arrows in the same yellow, since the chevrons are drawn with currentColor */
+/* the dots under the photo stay the brand's: the active one solid, the rest dimmed */
 .stage-slider .swiper-pagination-bullet{background:rgb(255 221 0);opacity:.35}
 .stage-slider .swiper-pagination-bullet-active{opacity:1}
-.stage__slider-button{color:rgb(255 221 0)!important}
 
 /* one slide in the gallery: nothing to page through, so the arrows go too */
 .stage-slider .swiper:not(:has(.swiper-slide + .swiper-slide)) ~ .stage__slider-button,

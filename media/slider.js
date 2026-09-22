@@ -418,8 +418,31 @@
     sw.on('transitionEnd', mark);
   }
 
+  // The photo gallery pages with the module's own long shafted arrow, drawn straight on
+  // the picture. The card rows next to it use a round button with a chevron, so the
+  // gallery takes that mark too: the button keeps its place and its click, only what is
+  // inside it is swapped for the chevron the card button draws (the same path, in the
+  // same rotated box). The "previous" button is already turned 180deg by the module.
+  var CHEVRON = '<div class="text-center transform translate-x-10% -rotate-90 w-2/5">'
+    + '<svg class="h-full w-full" width="14" height="8" viewBox="0 0 14 8" fill="none" '
+    + 'xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false">'
+    + '<path d="M7 7.69584C6.76087 7.69584 6.54348 7.60889 6.36957 7.43497L0.934785 1.7828C0.608698 '
+    + '1.43498 0.608698 0.891497 0.956524 0.543671C1.30435 0.217584 1.84783 0.217584 2.19565 '
+    + '0.565411L7 5.56541L11.8043 0.565411C12.1304 0.217584 12.6957 0.217584 13.0435 0.543671C13.3913 '
+    + '0.869758 13.3913 1.43498 13.0652 1.7828L7.63044 7.43497C7.45652 7.60889 7.23913 7.69584 7 '
+    + '7.69584Z" fill="currentColor"></path></svg></div>';
+
+  function galleryArrows() {
+    [].forEach.call(document.querySelectorAll('.stage__slider-button'), function (b) {
+      if (b.__hscChevron) return;
+      b.__hscChevron = true;
+      b.innerHTML = CHEVRON;
+    });
+  }
+
   function apply() {
     freeDrag();
+    galleryArrows();
     // the zone slider, the three flip cards and the three-small row — the gallery keeps
     // the module's own marks
     [].forEach.call(document.querySelectorAll('.slider-module .swiper, .flip-card-slider .swiper, '
