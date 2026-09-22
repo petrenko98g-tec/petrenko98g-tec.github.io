@@ -43,20 +43,20 @@
     if (rootEl) rootEl.innerHTML = '';
     var mark = performance.mark.bind(performance);
     performance.mark = function (name) {
-      if (name === 'afterHydrate' && !window.__ggFirstRender) {
+      if (name === 'afterHydrate' && !window.__hscFirstRender) {
         var root = document.getElementById('__next');
-        window.__ggFirstRender = root ? root.innerHTML : '';
+        window.__hscFirstRender = root ? root.innerHTML : '';
         // also parked outside React's root, so a headless --dump-dom can read it back
         var park = document.createElement('script');
-        park.type = 'text/plain'; park.id = 'gg-first-render';
-        park.textContent = window.__ggFirstRender.replace(/<\/script/gi, '<\\/script');
+        park.type = 'text/plain'; park.id = 'first-render';
+        park.textContent = window.__hscFirstRender.replace(/<\/script/gi, '<\\/script');
         document.body.appendChild(park);
       }
       return mark.apply(null, arguments);
     };
   }
 
-  window.ggReady = function (fn) {
+  window.hscReady = function (fn) {
     if (raw) return;
     if (done) fn(); else queue.push(fn);
   };

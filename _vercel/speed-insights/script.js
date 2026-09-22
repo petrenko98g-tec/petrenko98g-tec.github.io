@@ -1,1 +1,1 @@
-/* Vercel Speed Insights is part of the cloned bundle; this site sends no analytics. */
+/* the previous deployment loaded an analytics script here; the club uses none */

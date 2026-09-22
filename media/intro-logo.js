@@ -3,7 +3,7 @@
    The overlay (div.z-50 > black div) is the site's native preloader: it holds the
    screen, its 1750ms translateY(-100%) is the exit, and the same component's timer
    flips initStageAnimation2 — the flag every stage module waits on for its reveal.
-   Measured on this clone: hero reveal 2000-2715ms, overlay exit 3600-5300ms.
+   Measured here: hero reveal 2000-2715ms, overlay exit 3600-5300ms.
 
    So the build’s own logo video is only hidden, and our logo sits in the same black
    panel with the flip-in already used for the previous preloader. Both are done in the
@@ -31,11 +31,11 @@
     var els = root.querySelectorAll('*');
     for (var i = -1; i < els.length; i++) {
       var el = i < 0 ? root : els[i];
-      if (el.__ggSpeed) continue;
+      if (el.__hscSpeed) continue;
       var cs = getComputedStyle(el);
       var d = cs.transitionDuration, dl = cs.transitionDelay;
       if ((!d || d === '0s') && (!dl || dl === '0s')) continue;
-      el.__ggSpeed = true;
+      el.__hscSpeed = true;
       el.style.setProperty('transition-duration', scale(d), 'important');
       el.style.setProperty('transition-delay', scale(dl), 'important');
     }
@@ -57,8 +57,8 @@
       // the lift itself runs twice as fast as the rest: the site's 1750ms exit is already
       // at 1487ms after the global scaler, and this halves that leg only
       var panel = overlay.firstElementChild;
-      if (panel && !panel.__ggLift) {
-        panel.__ggLift = true;
+      if (panel && !panel.__hscLift) {
+        panel.__hscLift = true;
         var dur = parseFloat(getComputedStyle(panel).transitionDuration) || 1.4875;
         panel.style.setProperty('transition-duration', (dur / 2).toFixed(4) + 's', 'important');
       }

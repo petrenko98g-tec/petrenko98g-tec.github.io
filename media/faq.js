@@ -1,8 +1,8 @@
 /* FAQ as an accordion, built out of the three-small card.
 
    The bundle does carry the site's own accordion (acf/accordionteaser → AccordionModule),
-   but its webpack chunk (8427) was never part of this clone and the live site no longer
-   serves that build, so the module renders nothing. The block therefore stays the site's
+   but its webpack chunk (8427) is not part of the bundle we ship, so the module renders
+   nothing. The block therefore stays the site's
    image-text teaser and its copy — already written as <p><strong>question</strong><br>
    answer</p> — is folded into rows here.
 
@@ -12,7 +12,7 @@
    rte-style copy. On hover the row grows the way the card does (its own
    hover:w-[calc(100%+2rem)] hover:m-[-1rem] on a 500ms transition-all), without the
    card's white inversion. Only the row layout and the +/x marker are added, after the
-   reference for this block. */
+   sketch for this block. */
 (function () {
   var EASE = 'cubic-bezier(0.33, 1, 0.68, 1)';
 
@@ -20,7 +20,7 @@
   var TITLE = 'uppercase font-bold font-sofia-sans-extra-condensed text-3.5xl leading-8 '
             + 'tracking-0.125';
   var RULE = 'h-0.5 w-20 bg-ci-color';
-  var BODY = 'rte-style mf:font-montserrat gg:font-sofia-sans jr:font-open-sans '
+  var BODY = 'rte-style alt:font-montserrat club:font-sofia-sans alt2:font-open-sans '
            + 'leading-5.5 w-full rte-clear-p';
 
   function build() {
@@ -32,7 +32,7 @@
     for (var i = 0; i < mods.length; i++) {
       var mod = mods[i];
       var rte = mod && mod.querySelector('.rte-style');
-      if (!rte || rte.querySelector('[data-gg="faq-item"]')) continue;
+      if (!rte || rte.querySelector('[data-hsc="faq-item"]')) continue;
 
       var ps = rte.querySelectorAll('p');
       var rows = [];
@@ -51,17 +51,17 @@
       var html = '';
       for (var k = 0; k < rows.length; k++) {
         html +=
-          '<div data-gg="faq-item" class="' + CARD + '">' +
-            '<button type="button" data-gg="faq-q" aria-expanded="false">' +
-              '<span data-gg="faq-mark" aria-hidden="true">' +
+          '<div data-hsc="faq-item" class="' + CARD + '">' +
+            '<button type="button" data-hsc="faq-q" aria-expanded="false">' +
+              '<span data-hsc="faq-mark" aria-hidden="true">' +
                 '<svg width="14" height="14" viewBox="0 0 14 14" fill="none">' +
                   '<path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2"/>' +
                 '</svg>' +
               '</span>' +
               '<span class="' + TITLE + '">' + rows[k].q + '</span>' +
             '</button>' +
-            '<div data-gg="faq-a" style="height:0">' +
-              '<div data-gg="faq-inner">' +
+            '<div data-hsc="faq-a" style="height:0">' +
+              '<div data-hsc="faq-inner">' +
                 '<div class="' + RULE + '"></div>' +
                 '<div class="' + BODY + '"><p>' + rows[k].a + '</p></div>' +
               '</div>' +
@@ -74,15 +74,15 @@
   }
 
   function wire(root) {
-    [].forEach.call(root.querySelectorAll('[data-gg="faq-q"]'), function (btn) {
+    [].forEach.call(root.querySelectorAll('[data-hsc="faq-q"]'), function (btn) {
       btn.addEventListener('click', function () {
         var item = btn.parentElement;
-        var panel = item.querySelector('[data-gg="faq-a"]');
+        var panel = item.querySelector('[data-hsc="faq-a"]');
         var open = btn.getAttribute('aria-expanded') === 'true';
-        [].forEach.call(root.querySelectorAll('[data-gg="faq-item"]'), function (other) {
+        [].forEach.call(root.querySelectorAll('[data-hsc="faq-item"]'), function (other) {
           if (other === item) return;                       // one row at a time
-          other.querySelector('[data-gg="faq-q"]').setAttribute('aria-expanded', 'false');
-          other.querySelector('[data-gg="faq-a"]').style.height = '0';
+          other.querySelector('[data-hsc="faq-q"]').setAttribute('aria-expanded', 'false');
+          other.querySelector('[data-hsc="faq-a"]').style.height = '0';
         });
         btn.setAttribute('aria-expanded', open ? 'false' : 'true');
         panel.style.height = open ? '0' : panel.firstElementChild.offsetHeight + 'px';
@@ -98,34 +98,34 @@
     // neighbours. Padding grows by the same amount, so the question and the answer stay
     // where they are under the pointer and nothing around the row moves. Tailwind's
     // duration-300 on its default ease.
-    '[data-gg="faq-item"]{--gx:0rem;--gy:0rem;padding:var(--gy) 0;margin-bottom:calc(-1 * var(--gy));'
+    '[data-hsc="faq-item"]{--gx:0rem;--gy:0rem;padding:var(--gy) 0;margin-bottom:calc(-1 * var(--gy));'
       + 'margin-top:calc(-1 * var(--gy));transition:width .3s cubic-bezier(.4,0,.2,1),'
       + 'margin .3s cubic-bezier(.4,0,.2,1),padding .3s cubic-bezier(.4,0,.2,1)}',
-    '[data-gg="faq-item"] + [data-gg="faq-item"]{margin-top:calc(1rem - var(--gy))}',
-    '@media (hover:hover){[data-gg="faq-item"]:hover{--gx:1rem;--gy:.5rem;width:calc(100% + 2rem);'
+    '[data-hsc="faq-item"] + [data-hsc="faq-item"]{margin-top:calc(1rem - var(--gy))}',
+    '@media (hover:hover){[data-hsc="faq-item"]:hover{--gx:1rem;--gy:.5rem;width:calc(100% + 2rem);'
       + 'margin-left:-1rem;margin-right:-1rem}}',
-    '[data-gg="faq-q"],[data-gg="faq-inner"]{transition:padding .3s cubic-bezier(.4,0,.2,1)}',
-    '[data-gg="faq-q"]{display:flex;align-items:center;gap:1rem;width:100%;text-align:left;'
+    '[data-hsc="faq-q"],[data-hsc="faq-inner"]{transition:padding .3s cubic-bezier(.4,0,.2,1)}',
+    '[data-hsc="faq-q"]{display:flex;align-items:center;gap:1rem;width:100%;text-align:left;'
       + 'padding:1.5rem calc(1.5rem + var(--gx));background:none;border:0;cursor:pointer;color:inherit}',
-    '@media (min-width:640px){[data-gg="faq-q"]{padding:2rem calc(2rem + var(--gx))}}',
-    '[data-gg="faq-mark"]{flex:0 0 auto;display:flex;align-items:center;justify-content:center;'
+    '@media (min-width:640px){[data-hsc="faq-q"]{padding:2rem calc(2rem + var(--gx))}}',
+    '[data-hsc="faq-mark"]{flex:0 0 auto;display:flex;align-items:center;justify-content:center;'
       + 'width:2rem;height:2rem;border:1px solid currentColor;border-radius:9999px;'
       + 'transition:transform .25s ' + EASE + '}',
-    '[data-gg="faq-q"][aria-expanded="true"] [data-gg="faq-mark"]{transform:rotate(45deg)}',
+    '[data-hsc="faq-q"][aria-expanded="true"] [data-hsc="faq-mark"]{transform:rotate(45deg)}',
     // the question reads as a control, not a card title, so it runs on the step the CTA
     // and the menu items use (text-1.75xl = 1.375rem) instead of the card-title step
-    '[data-gg="faq-q"] .text-3\\.5xl{font-size:1.375rem!important;line-height:2rem!important}',
-    '[data-gg="faq-a"]{overflow:hidden;transition:height .3s ' + EASE + '}',
-    '[data-gg="faq-inner"]{padding:0 calc(1.5rem + var(--gx)) 1.5rem calc(4rem + var(--gx))}',
-    '@media (min-width:640px){[data-gg="faq-inner"]{padding:0 calc(2rem + var(--gx)) 2rem calc(5rem + var(--gx))}}',
+    '[data-hsc="faq-q"] .text-3\\.5xl{font-size:1.375rem!important;line-height:2rem!important}',
+    '[data-hsc="faq-a"]{overflow:hidden;transition:height .3s ' + EASE + '}',
+    '[data-hsc="faq-inner"]{padding:0 calc(1.5rem + var(--gx)) 1.5rem calc(4rem + var(--gx))}',
+    '@media (min-width:640px){[data-hsc="faq-inner"]{padding:0 calc(2rem + var(--gx)) 2rem calc(5rem + var(--gx))}}',
     // the rule sits above the copy with the card's own mb-4 / sm:mb-6 gap
-    '[data-gg="faq-inner"] > .h-0\\.5{margin-bottom:1rem}',
-    '@media (min-width:640px){[data-gg="faq-inner"] > .h-0\\.5{margin-bottom:1.5rem}}'
+    '[data-hsc="faq-inner"] > .h-0\\.5{margin-bottom:1rem}',
+    '@media (min-width:640px){[data-hsc="faq-inner"] > .h-0\\.5{margin-bottom:1.5rem}}'
   ].join('\n');
   (document.head || document.documentElement).appendChild(css);
 
   // not before React has taken over the server HTML (see media/ready.js)
-  (window.ggReady || function (f) { f(); })(function () {
+  (window.hscReady || function (f) { f(); })(function () {
     build();
     document.addEventListener('DOMContentLoaded', build);
     window.addEventListener('load', build);

@@ -11,10 +11,10 @@
   var css = document.createElement('style');
   css.textContent = [
     // below md the filled media box would still keep its mb-6 above the headline
-    '@media (max-width:767px){[data-gg="wl-media"]{display:none!important}}',
-    '[data-gg="wl-right"]{display:none}',
-    '@media (min-width:768px){[data-gg="wl-right"]{display:flex}',
-    '  [data-gg="wl-moved"]{display:none}}'
+    '@media (max-width:767px){[data-hsc="wl-media"]{display:none!important}}',
+    '[data-hsc="wl-right"]{display:none}',
+    '@media (min-width:768px){[data-hsc="wl-right"]{display:flex}',
+    '  [data-hsc="wl-moved"]{display:none}}'
   ].join('\n');
   (document.head || document.documentElement).appendChild(css);
 
@@ -22,7 +22,7 @@
     var jump = document.getElementById('Вейт-лист');
     var sec = jump && jump.closest('section');
     var mod = sec && sec.querySelector('.image-text-teaser-module');
-    if (!mod || mod.querySelector('[data-gg="wl-right"]')) return;
+    if (!mod || mod.querySelector('[data-hsc="wl-right"]')) return;
     var media = mod.querySelector(':scope > div:empty');
     var rte = mod.querySelector('.rte-style');
     if (!media || !rte) return;
@@ -33,7 +33,7 @@
     if (!perks.length) return;
 
     var col = document.createElement('div');
-    col.setAttribute('data-gg', 'wl-right');
+    col.setAttribute('data-hsc', 'wl-right');
     col.className = 'flex-col justify-center w-full h-full md:pr-10 lg:pr-20 xl:pr-52';
     var box = document.createElement('div');
     // same text colour as the copy column (text-white on dark, text-black on light)
@@ -41,15 +41,15 @@
     box.className = rte.className + ' ' + (tone && tone.classList.contains('text-black') ? 'text-black' : 'text-white');
     perks.forEach(function (p) {
       box.appendChild(p.cloneNode(true));
-      p.setAttribute('data-gg', 'wl-moved');
+      p.setAttribute('data-hsc', 'wl-moved');
     });
     col.appendChild(box);
-    media.setAttribute('data-gg', 'wl-media');
+    media.setAttribute('data-hsc', 'wl-media');
     media.appendChild(col);
   }
 
   // not before React has taken over the server HTML (see media/ready.js)
-  (window.ggReady || function (f) { f(); })(function () {
+  (window.hscReady || function (f) { f(); })(function () {
     place();
     var mo = new MutationObserver(place);
     mo.observe(document.documentElement, { childList: true, subtree: true });

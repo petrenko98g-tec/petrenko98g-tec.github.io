@@ -11,21 +11,21 @@
   var css = document.createElement('style');
   css.textContent = [
     // a row of its own under the footer columns, centred and sitting on the bottom edge
-    '[data-gg="credit"]{display:flex;align-items:center;justify-content:center;gap:.5rem;',
+    '[data-hsc="credit"]{display:flex;align-items:center;justify-content:center;gap:.5rem;',
     // the block above ends on a half pixel, so the row overlaps it by one (the site's
     // own -mb-[1px] trick) and the page's white cannot show through the seam
     '  width:100%;padding:0 1.5rem 2rem;margin-top:-1px}',
-    '@media (min-width:768px){[data-gg="credit"]{padding-bottom:3rem}}',
+    '@media (min-width:768px){[data-hsc="credit"]{padding-bottom:3rem}}',
     // the mark is drawn dark; on the black footer it runs inverted, as on the original
-    '[data-gg="credit"] img{height:14px;width:auto;filter:invert(1) brightness(2.2)}'
+    '[data-hsc="credit"] img{height:14px;width:auto;filter:invert(1) brightness(2.2)}'
   ].join('\n');
   (document.head || document.documentElement).appendChild(css);
 
   function place() {
     var foot = document.querySelector('footer.footer') || document.querySelector('footer');
-    if (!foot || foot.querySelector('[data-gg="credit"]')) return;
+    if (!foot || foot.querySelector('[data-hsc="credit"]')) return;
     var row = document.createElement('div');
-    row.setAttribute('data-gg', 'credit');
+    row.setAttribute('data-hsc', 'credit');
     // the row sits below the footer's own black block, so it carries the same ground
     row.className = 'bg-black';
     row.innerHTML = '<span class="font-sofia-sans text-sm text-grey4">' + LINE + '</span>' +
@@ -41,7 +41,7 @@
   }
 
   // not before React has taken over the server HTML (see media/ready.js)
-  (window.ggReady || function (f) { f(); })(function () {
+  (window.hscReady || function (f) { f(); })(function () {
     place();
     var mo = new MutationObserver(place);
     mo.observe(document.documentElement, { childList: true, subtree: true });

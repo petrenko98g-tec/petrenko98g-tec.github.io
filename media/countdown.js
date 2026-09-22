@@ -1,10 +1,9 @@
 /* Countdown banner.
 
-   the base build ships this as a React component, but our copy of the bundle does not
-   contain it: when the site was cloned the banner was switched off by its dates, so
-   Next never loaded that chunk. Every CSS class it needs is still in the stylesheet,
-   so the markup below is copied verbatim from the live page (classes, structure,
-   close button, sr-only <time>) and only the texts are ours.
+   The build carries this as a React component, but its chunk is not in the bundle we
+   ship: the banner was switched off by its dates when the build was made, so Next never
+   loaded it. Every CSS class it needs is still in the stylesheet, so the markup below is
+   written out here (classes, structure, close button, sr-only <time>).
 
    Settings are read from __NEXT_DATA__ (countdownSettings), the same place the real
    component reads them, so the banner stays data-driven rather than hard-coded. */
@@ -40,11 +39,11 @@
 
   function build() {
     var host = INTRO ? document.querySelector('.sticky') : document.body;
-    if (!host || document.querySelector('[data-gg="countdown"]')) return;
+    if (!host || document.querySelector('[data-hsc="countdown"]')) return;
     if (!INTRO && !document.getElementById('__next')) return;
 
     var bar = document.createElement('div');
-    bar.setAttribute('data-gg', 'countdown');
+    bar.setAttribute('data-hsc', 'countdown');
     bar.className = '\n\t\t\t\tgrid grid-cols-1 md:grid-cols-[1fr_auto_1fr]\n\t\t\t\tmd:grid-rows-1\n\t\t\t\t' +
       'sm:px-[1.875rem] \n\t\t\t\tcontent-center        \n        text-center sm:text-left\n\t\t\t\t' +
       'place-items-center\t\t\t\t\n        overflow-hidden\n        relative\n        z-1\n\t\t ' +
@@ -52,7 +51,7 @@
 
     var units = UNITS.map(function (u) {
       return '<div class="\n\t\t\t\tflex flex-col \n\t\t\t\titems-center \n\n\t\t\t px-5 py-3.5 md:py-6">' +
-        '<span data-u="' + u[0] + '" class="gg:font-gravitas-one text-3.5xl sm:text-5.5xl leading-8 sm:leading-14">0</span>' +
+        '<span data-u="' + u[0] + '" class="club:font-gravitas-one text-3.5xl sm:text-5.5xl leading-8 sm:leading-14">0</span>' +
         '<span class="leading-4 font-bold font-sofia-sans uppercase text-xxs">' + u[1] + '</span></div>';
     }).join('');
 
@@ -74,7 +73,7 @@
     if (INTRO) {
       host.insertBefore(bar, host.firstChild);
     } else {
-      bar.setAttribute('data-gg-out', '');
+      bar.setAttribute('data-hsc-out', '');
       host.insertBefore(bar, document.getElementById('__next'));
       var setH = function () {
         document.documentElement.style.setProperty('--gg-cd-h', bar.offsetHeight + 'px');
@@ -93,7 +92,7 @@
       m: Math.floor(left / 60000) % 60,
       s: Math.floor(left / 1000) % 60
     };
-    var bar = document.querySelector('[data-gg="countdown"]');
+    var bar = document.querySelector('[data-hsc="countdown"]');
     if (!bar) return;
     UNITS.forEach(function (u) {
       var el = bar.querySelector('[data-u="' + u[0] + '"]');
@@ -107,32 +106,32 @@
   css.textContent = [
     // out-of-root banner: pinned on its own, above the header (z-20); the header sticks
     // right under it instead of at 0
-    '[data-gg="countdown"][data-gg-out]{position:sticky;top:0;z-index:21}',
-    'html:has([data-gg-out]) .sticky{top:var(--gg-cd-h,0px)!important}',
+    '[data-hsc="countdown"][data-hsc-out]{position:sticky;top:0;z-index:21}',
+    'html:has([data-hsc-out]) .sticky{top:var(--gg-cd-h,0px)!important}',
     // Phone (below md, where the banner stacks): title and link share one row under the
     // digits instead of taking a row each. The rows become the site's own 2-row template
     // (grid-rows-countdownMobileNoCTA: 2fr 1fr), the digits span both columns, and the
     // two texts sit side by side with the site's gap-4 (1rem) between them.
     '@media (max-width:767px){',
-    '  [data-gg="countdown"]{grid-template-columns:auto auto;grid-template-rows:auto auto;'
+    '  [data-hsc="countdown"]{grid-template-columns:auto auto;grid-template-rows:auto auto;'
     + 'justify-content:center;column-gap:1rem}',
-    '  [data-gg="countdown"] > div:nth-child(2){grid-column:1 / -1;grid-row:1}',
-    '  [data-gg="countdown"] > h4{grid-column:1;grid-row:2;padding-left:0;padding-right:0}',
-    '  [data-gg="countdown"] > div:nth-child(3){grid-column:2;grid-row:2;align-self:center}',
+    '  [data-hsc="countdown"] > div:nth-child(2){grid-column:1 / -1;grid-row:1}',
+    '  [data-hsc="countdown"] > h4{grid-column:1;grid-row:2;padding-left:0;padding-right:0}',
+    '  [data-hsc="countdown"] > div:nth-child(3){grid-column:2;grid-row:2;align-self:center}',
     '}',
     // phone: the banner eats a quarter of the screen at the site's own digit size, so the
     // digits and both texts drop a step and the box keeps a tighter vertical padding
     '@media (max-width:639px){',
-    '  [data-gg="countdown"]{padding-top:.5rem!important;padding-bottom:.5rem!important;row-gap:0}',
-    '  [data-gg="countdown"] [data-u]{font-size:1.75rem!important;line-height:2rem!important}',
-    '  [data-gg="countdown"] [data-u] + *{font-size:.625rem!important;line-height:1rem!important}',
-    '  [data-gg="countdown"] h4,[data-gg="countdown"] a{font-size:1rem!important;line-height:1.5rem!important}',
+    '  [data-hsc="countdown"]{padding-top:.5rem!important;padding-bottom:.5rem!important;row-gap:0}',
+    '  [data-hsc="countdown"] [data-u]{font-size:1.75rem!important;line-height:2rem!important}',
+    '  [data-hsc="countdown"] [data-u] + *{font-size:.625rem!important;line-height:1rem!important}',
+    '  [data-hsc="countdown"] h4,[data-hsc="countdown"] a{font-size:1rem!important;line-height:1.5rem!important}',
     '}',
     '@media (min-width:640px) and (max-width:1023px){',
-    '  [data-gg="countdown"] [data-u]{font-size:2.5rem!important;line-height:2.5rem!important}',
+    '  [data-hsc="countdown"] [data-u]{font-size:2.5rem!important;line-height:2.5rem!important}',
     // heading and link cut by the same amount as the digits, so the title stops
     // wrapping to three lines and the link clears the close button
-    '  [data-gg="countdown"] h4,[data-gg="countdown"] a{font-size:1.375rem!important;line-height:1.7rem!important}',
+    '  [data-hsc="countdown"] h4,[data-hsc="countdown"] a{font-size:1.375rem!important;line-height:1.7rem!important}',
     '}'
   ].join('\n');
   (document.head || document.documentElement).appendChild(css);
@@ -140,7 +139,7 @@
   if (!INTRO) build();                                   // before the first paint
 
   // not before React has taken over the server HTML (see media/ready.js)
-  (window.ggReady || function (f) { f(); })(function () {
+  (window.hscReady || function (f) { f(); })(function () {
     build();
     document.addEventListener('DOMContentLoaded', build);
     window.addEventListener('load', build);

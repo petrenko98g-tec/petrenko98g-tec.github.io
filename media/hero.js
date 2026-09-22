@@ -1,12 +1,9 @@
-/* Ports the hero block structure from the previous clone.
-   React is live in this clone, so the markup is applied after render and
-   re-applied if the framework re-renders the tree. Styles are copied verbatim
-   from the previous clone — nothing new is invented here. */
+/* Hero block: the paragraph under the headline and the phone field beside the button.
+
+   The headline, the eyebrow and the button's wording live in the page data, so they are
+   in the server HTML as well. What is left here has no field of its own and is added
+   after React renders, then re-added if React renders again. */
 (function () {
-  var EYEBROW = 'Happy Sport Club';
-  // non-breaking space keeps the dash on the same line as "шукав"
-  var HEAD_1 = 'Зал, який ти шукав — ';
-  var HEAD_2 = 'скоро у твоєму кварталі';
   var PARA = 'Для батьків, у яких немає часу.\n' +
              'Тренуєшся, поки дитина в басейні поруч або в школі через критий перехід.\n' +
              'Без няні, без розвозок, без відчуття провини.';
@@ -17,25 +14,13 @@
     var group = document.querySelector('.stage-module-headline-content-group');
     if (!group) return;
 
-    // 1. eyebrow
-    var eyebrow = group.querySelector('.tracking-subline div');
-    if (eyebrow && eyebrow.textContent.trim() !== EYEBROW) eyebrow.textContent = EYEBROW;
-
-    // 2. headline (keep both animated word spans)
-    var words = group.querySelectorAll('h1.headline-group > span > span');
-    if (words.length >= 2) {
-      if (words[0].textContent !== HEAD_1) words[0].textContent = HEAD_1;
-      if (words[1].textContent !== HEAD_2) words[1].textContent = HEAD_2;
-      for (var i = 2; i < words.length; i++) words[i].textContent = '';
-    }
-
-    // 3. descriptive paragraph under the headline
+    // 1. descriptive paragraph under the headline
     var headWrap = group.querySelector('h1.headline-group');
     headWrap = headWrap && headWrap.parentElement;
-    var existing = group.querySelector('[data-gg="para"]');
+    var existing = group.querySelector('[data-hsc="para"]');
     if (headWrap && !existing) {
       var p = document.createElement('p');
-      p.setAttribute('data-gg', 'para');
+      p.setAttribute('data-hsc', 'para');
       // white-space keeps the line breaks the copy is written with
       // full white at the site's normal weight — the earlier 300/75% washed out over the photo
       p.style.cssText = 'max-width:640px;font-size:1.125rem;font-weight:400;line-height:1.6;color:#fff;margin-top:20px;text-align:left;white-space:pre-line';
@@ -45,14 +30,14 @@
       existing.textContent = PARA;
     }
 
-    // 4. phone field + CTA button, replacing the plain link
+    // 2. phone field + CTA button, replacing the plain link
     var ctaRow = group.querySelector('.flex.flex-col.sm\\:flex-row, div[class*="space-y-4"][class*="p-3"]');
-    if (ctaRow && !ctaRow.querySelector('[data-gg="form"]')) {
+    if (ctaRow && !ctaRow.querySelector('[data-hsc="form"]')) {
       var holder = ctaRow.firstElementChild || ctaRow;
       var link = holder.querySelector('a, button');
       var label = CTA;
       var box = document.createElement('div');
-      box.setAttribute('data-gg', 'form');
+      box.setAttribute('data-hsc', 'form');
       // phone field (min 160) + gap + the button's natural single-line width; the label
       // runs at the header's 1.375rem now, so the row needs the extra space
       box.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;max-width:560px';
@@ -63,7 +48,7 @@
       holder.appendChild(box);
 
       var fine = document.createElement('p');
-      fine.setAttribute('data-gg', 'fine');
+      fine.setAttribute('data-hsc', 'fine');
       fine.style.cssText = 'font-size:.75rem;line-height:1.6;color:#fff;margin:12px 0 0;max-width:460px';
       fine.textContent = FINE;
       holder.appendChild(fine);
@@ -105,12 +90,12 @@
     '.tracking-subline.sm\\:text-3\\.5xl{font-size:.875rem!important}',
     '@media (max-width:640px){.cta-button.stage-content__cta.checkout-cta{width:100%!important}}',
     // on a phone the written line breaks only make ragged half-lines — let the copy flow
-    '@media (max-width:640px){p[data-gg="para"]{white-space:normal!important}}'
+    '@media (max-width:640px){p[data-hsc="para"]{white-space:normal!important}}'
   ].join('\n');
   document.head.appendChild(css);
 
   // not before React has taken over the server HTML (see media/ready.js)
-  (window.ggReady || function (f) { f(); })(function () {
+  (window.hscReady || function (f) { f(); })(function () {
     run();
     document.addEventListener('DOMContentLoaded', run);
     window.addEventListener('load', run);

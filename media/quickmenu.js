@@ -1,6 +1,6 @@
-/* Quick menu — cloned from the widget on clever-fit.com (the reference the user gave).
+/* Quick menu — the floating menu asked for on this site.
 
-   Geometry and behaviour are taken from their stylesheet verbatim:
+   Geometry and behaviour, as specified:
      #quick-menu      position:fixed; right:0; bottom:5vh; z-index:20
      .nav             absolute, right:0, transition all .44s ease
      collapsed        every item except the toggle shifts translate(100%)
@@ -9,8 +9,7 @@
      icon             25px tall
      corners          10px on the first and last item
      panel            slides in from the right, blur(4px), max-width 600px
-   Colours are ours, not theirs: the site's #0D0D0D and ci-yellow #FFDD00
-   replace clever-fit's greys and red. */
+   Colours are the site's own: #0D0D0D and ci-yellow #FFDD00. */
 (function () {
   var ITEMS = [
     { id: 'contact', name: 'Контакти', icon: 'phone', html:

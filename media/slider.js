@@ -67,15 +67,15 @@
     // Dot row under a carousel: the gallery's marks (#FFDD00, the active one solid).
     // On the white bands a dimmed yellow would disappear, so the idle dots are the
     // page's own ink at 20%.
-    '[data-gg="dots"]{display:flex;justify-content:center;gap:.5rem;margin:1.5rem 0 0}',
+    '[data-hsc="dots"]{display:flex;justify-content:center;gap:.5rem;margin:1.5rem 0 0}',
     // only on a phone, where one card fills the row and the rest are out of sight; from
     // md up the row already shows several cards and the marks would only add noise
-    '@media (min-width:768px){[data-gg="dots"]{display:none}}',
-    '[data-gg="dots"] button{width:.5rem;height:.5rem;padding:0;border:0;border-radius:9999px;'
+    '@media (min-width:768px){[data-hsc="dots"]{display:none}}',
+    '[data-hsc="dots"] button{width:.5rem;height:.5rem;padding:0;border:0;border-radius:9999px;'
       + 'background:rgba(0,0,0,.2);cursor:pointer;transition:background .25s ease,transform .25s ease}',
-    '[data-gg="dots"] button[aria-current="true"]{background:rgb(255 221 0);transform:scale(1.25)}',
-    '[data-gg="dots"][data-on-dark] button{background:rgba(255,255,255,.28)}',
-    '[data-gg="dots"][data-on-dark] button[aria-current="true"]{background:rgb(255 221 0)}',
+    '[data-hsc="dots"] button[aria-current="true"]{background:rgb(255 221 0);transform:scale(1.25)}',
+    '[data-hsc="dots"][data-on-dark] button{background:rgba(255,255,255,.28)}',
+    '[data-hsc="dots"][data-on-dark] button[aria-current="true"]{background:rgb(255 221 0)}',
     // Every grid row (the shoutout cards and the price cards): the card body carries the
     // module's lg:-translate-y-16 / lg:-mb-16, which lifts it 64px into the block above.
     // Here a text block sits above each row, so the lift would cover its text — dropped.
@@ -118,7 +118,7 @@
     + 'margin-right:1rem;transform:none!important;margin-top:0!important;'
     + 'margin-bottom:0!important;height:auto!important;align-self:stretch}',
     S + ' .shoutout-teaser > div{height:100%}',
-    // from lg the strip holds the full-size cards side by side, as on the clone
+    // from lg the strip holds the full-size cards side by side, as in the design
     '@media (min-width:1024px){',
     '  ' + S + ' .shoutout-teaser{flex:0 0 28rem;max-width:28rem;margin-right:0}',
     '}',
@@ -225,8 +225,8 @@
   // so it scrolls with a finger or trackpad on its own but needs this for a mouse.
   function dragScroll() {
     [].forEach.call(document.querySelectorAll('.grid-wrapper'), function (row) {
-      if (row.__ggDragScroll) return;
-      row.__ggDragScroll = true;
+      if (row.__hscDragScroll) return;
+      row.__hscDragScroll = true;
       var down = false, startX = 0, startLeft = 0, moved = 0;
       row.addEventListener('pointerdown', function (e) {
         if (e.button || getComputedStyle(row).overflowX !== 'auto') return;
@@ -241,7 +241,7 @@
         // dragging out of either end of the strip is carried over into the other copy of
         // the cards, and the grab point is carried with it, so the row keeps following the
         // pointer instead of stopping at the first or the last card
-        var p = row.__ggPeriod ? row.__ggPeriod() : 0;
+        var p = row.__hscPeriod ? row.__hscPeriod() : 0;
         if (p) {
           while (target < 0) { target += p; startLeft += p; }
           while (target >= p) { target -= p; startLeft -= p; }
@@ -267,13 +267,13 @@
       var rs = getComputedStyle(row);
       if (rs.overflowX !== 'auto' || rs.flexDirection !== 'row') return;   // stacked: no strip
       var cards = [].filter.call(row.children, function (c) {
-        return c.classList.contains('shoutout-teaser') && !c.hasAttribute('data-gg-clone');
+        return c.classList.contains('shoutout-teaser') && !c.hasAttribute('data-hsc-copy');
       });
       if (cards.length < 2) return;
-      if (!row.querySelector('[data-gg-clone]')) {
+      if (!row.querySelector('[data-hsc-copy]')) {
         cards.forEach(function (c) {
           var k = c.cloneNode(true);
-          k.setAttribute('data-gg-clone', '');
+          k.setAttribute('data-hsc-copy', '');
           k.setAttribute('aria-hidden', 'true');
           // the text block sits in a spacer whose height the site's reveal writes inline
           // while it measures; a copy keeps whatever number was there at that instant and
@@ -284,8 +284,8 @@
           row.appendChild(k);
         });
       }
-      if (row.__ggStrip) return;
-      row.__ggStrip = true;
+      if (row.__hscStrip) return;
+      row.__hscStrip = true;
 
       // The wrap distance is the width of one copy of the set — the distance between a
       // card and its clone — not half the scroll width: the row's own padding sits once
@@ -296,7 +296,7 @@
         var n = cs.length / 2;
         return n >= 1 ? cs[n].offsetLeft - cs[0].offsetLeft : 0;
       }
-      row.__ggPeriod = period;                                     // the mouse drag wraps too
+      row.__hscPeriod = period;                                     // the mouse drag wraps too
       // the new position is kept off the far boundary, so the scroll event it fires itself
       // can never wrap it straight back
       function wrapScroll() {
@@ -304,7 +304,7 @@
         if (p && row.scrollLeft >= p) row.scrollLeft -= p;
       }
       row.addEventListener('scroll', function () {
-        if (row.__ggSmooth) return;                                // don't cut a running step
+        if (row.__hscSmooth) return;                                // don't cut a running step
         wrapScroll();
       });
 
@@ -321,27 +321,27 @@
       function step() {
         var d = stride(), p = period();
         if (!d || !p) return;
-        row.__ggSmooth = true;
+        row.__hscSmooth = true;
         row.scrollBy({ left: d, behavior: 'smooth' });
         setTimeout(function () {
-          row.__ggSmooth = false;
+          row.__hscSmooth = false;
           if (row.scrollLeft >= p) row.scrollLeft -= p;
         }, 800);
       }
       var play = autoplay(row, step);
       row.addEventListener('pointerdown', play.stop);
       window.addEventListener('pointerup', function () {
-        if (row.__ggWasDown) { row.__ggWasDown = false; play.start(STEP); }
+        if (row.__hscWasDown) { row.__hscWasDown = false; play.start(STEP); }
       });
-      row.addEventListener('pointerdown', function () { row.__ggWasDown = true; });
+      row.addEventListener('pointerdown', function () { row.__hscWasDown = true; });
     });
   }
 
   function freeDrag() {
     [].forEach.call(document.querySelectorAll('.swiper'), function (el) {
       var sw = el.swiper;
-      if (!sw || el.__ggDrag || !sw.params.allowTouchMove) return;
-      el.__ggDrag = true;
+      if (!sw || el.__hscDrag || !sw.params.allowTouchMove) return;
+      el.__hscDrag = true;
       sw.params.noSwiping = false;
       sw.params.grabCursor = true;
       if (sw.setGrabCursor) sw.setGrabCursor();
@@ -372,7 +372,7 @@
   // gallery's dot marks under it: one per card, the current one solid yellow, click to jump.
   function dots(el) {
     var sw = el.swiper;
-    if (!sw || el.__ggDots) return;
+    if (!sw || el.__hscDots) return;
     // a looped carousel rotates its slides and numbers them; a plain one has no numbers,
     // and then the slides themselves are the count
     var count = 0;
@@ -382,10 +382,10 @@
       else count = Math.max(count, parseInt(i, 10) + 1);
     });
     if (count < 2) return;
-    el.__ggDots = true;
+    el.__hscDots = true;
 
     var row = document.createElement('div');
-    row.setAttribute('data-gg', 'dots');
+    row.setAttribute('data-hsc', 'dots');
     // white text in the block means a dark ground: the idle dots go light instead
     var tone = el.closest('.text-white, .bg-black, [class*="bg-gray"]');
     if (tone) row.setAttribute('data-on-dark', '');
@@ -428,8 +428,8 @@
     dragScroll();
     stripLoop();
     var el = document.querySelector('.slider-module .swiper');
-    if (!el || !el.swiper || el.__ggSlider) return;
-    el.__ggSlider = true;
+    if (!el || !el.swiper || el.__hscSlider) return;
+    el.__hscSlider = true;
     var sw = el.swiper;
 
     // 4 cards from the site's lg breakpoint up; below that keep whatever the module set.
@@ -510,7 +510,7 @@
   }
 
   // not before React has taken over the server HTML (see media/ready.js)
-  (window.ggReady || function (f) { f(); })(function () {
+  (window.hscReady || function (f) { f(); })(function () {
     apply();
     document.addEventListener('DOMContentLoaded', apply);
     window.addEventListener('resize', stripLoop);

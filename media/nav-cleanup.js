@@ -17,7 +17,7 @@
     });
     // mobile / off-canvas menu entries with the same labels
     Array.prototype.forEach.call(document.querySelectorAll('a, button'), function (el) {
-      if (el.closest('[data-gg-keep]')) return;
+      if (el.closest('[data-hsc-keep]')) return;
       var t = (el.textContent || '').trim().toLowerCase();
       if (DROP.indexOf(t) === -1) return;
       var item = el.closest('li') || (isNavItem(el.parentElement) ? el.parentElement : null);
@@ -26,7 +26,7 @@
   }
 
   // not before React has taken over the server HTML (see media/ready.js)
-  (window.ggReady || function (f) { f(); })(function () {
+  (window.hscReady || function (f) { f(); })(function () {
     clean();
     document.addEventListener('DOMContentLoaded', clean);
     window.addEventListener('load', clean);

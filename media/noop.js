@@ -1,1 +1,1 @@
-/* the clone loaded a chat widget from its provider here; the club has none yet */
+/* the build loaded a chat widget here; the club has none yet */

@@ -44,8 +44,8 @@
       btn.setAttribute('aria-label', t);
     };
     sync();
-    if (!vid.__ggLabel) {
-      vid.__ggLabel = true;
+    if (!vid.__hscLabel) {
+      vid.__hscLabel = true;
       vid.addEventListener('play', sync);
       vid.addEventListener('pause', sync);
       btn.addEventListener('click', function () { setTimeout(sync, 60); });
@@ -57,8 +57,8 @@
     videoLabel();
     // the video control swaps its own label back when it is pressed, after the observer
     // below has gone quiet — so every click re-checks the labels
-    if (!document.__ggLabelClick) {
-      document.__ggLabelClick = true;
+    if (!document.__hscLabelClick) {
+      document.__hscLabelClick = true;
       document.addEventListener('click', function () { setTimeout(labels, 0); }, true);
     }
     // the bundle stamps lang from its own locale; the content is Ukrainian
@@ -113,7 +113,7 @@
   (document.head || document.documentElement).appendChild(css);
 
   // not before React has taken over the server HTML (see media/ready.js)
-  (window.ggReady || function (f) { f(); })(function () {
+  (window.hscReady || function (f) { f(); })(function () {
     misc();
     var mo = new MutationObserver(misc);
     mo.observe(document.documentElement, { childList: true, subtree: true });

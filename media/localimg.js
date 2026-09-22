@@ -11,10 +11,10 @@
 
   function fix() {
     [].forEach.call(document.images, function (img) {
-      if (img.__ggLocal) return;
+      if (img.__hscLocal) return;
       var m = RE.exec(img.getAttribute('src') || '');
       if (!m) return;
-      img.__ggLocal = true;
+      img.__hscLocal = true;
       img.removeAttribute('srcset');
       img.removeAttribute('sizes');
       // the builder drops the file extension on its way through cloudinary
@@ -25,7 +25,7 @@
   }
 
   // not before React has taken over the server HTML (see media/ready.js)
-  (window.ggReady || function (f) { f(); })(function () {
+  (window.hscReady || function (f) { f(); })(function () {
     fix();
     // the carousel swaps its lazy placeholders for real sources as slides come into view,
     // long after the page settles, so the watch stays on for the life of the page
