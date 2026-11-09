@@ -5,6 +5,11 @@
    flips initStageAnimation2 — the flag every stage module waits on for its reveal.
    Measured here: hero reveal 2000-2715ms, overlay exit 3600-5300ms.
 
+   What holds the screen is a plain timer in the page chunk (pages/index-…js): the
+   overlay starts to lift 4675ms after it mounts. That number is cut to 2200ms there —
+   long enough for the mark to flip in and be read, short enough that the first screen
+   no longer waits in black.
+
    So the build’s own logo video is only hidden, and our logo sits in the same black
    panel with the flip-in already used for the previous preloader. Both are done in the
    stylesheet (_next/static/css/…, loaded in <head>), not here: this file runs at the end
@@ -47,6 +52,7 @@
       return isNaN(s) ? v : (s * SPEED).toFixed(4) + 's';
     }).join(', ');
   }
+
 
   // Only timings are touched here (style attributes, which React does not check while
   // hydrating), so this can run straight away.

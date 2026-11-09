@@ -1,5 +1,5 @@
 /* «Обери свій формат» — the three format cards in the style of the offer box sketched
-   for this block: title, big price with its period, a check-mark list, the yellow button
+   for this block: title, big price with its period, a check-mark list, the primary button
    and a small note under it.
 
    That box belongs to the split-text teaser, whose chunk (1988) is not in the bundle, so
@@ -50,14 +50,14 @@
   css.textContent = [
     // the row: the flip-card geometry used for the price row before (3 equal cards,
     // 24px apart, 60px / 228px side margins); stacked below lg at the box's own lg:w-120
-    '[data-hsc="formats"] .gg-row{display:flex;flex-direction:column;gap:1.5rem;padding:0 1.5rem 2rem}',
-    '[data-hsc="formats"] .gg-row > div{max-width:30rem;margin:0 auto}',
+    '[data-hsc="formats"] .hsc-row{display:flex;flex-direction:column;gap:1.5rem;padding:0 1.5rem 2rem}',
+    '[data-hsc="formats"] .hsc-row > div{max-width:30rem;margin:0 auto}',
     // bottom space on the section container's own steps (py-8 sm:py-10 md:py-12 xl:py-16)
-    '@media (min-width:576px){[data-hsc="formats"] .gg-row{padding-bottom:2.5rem}}',
-    '@media (min-width:768px){[data-hsc="formats"] .gg-row{padding-bottom:3rem}}',
-    '@media (min-width:1024px){[data-hsc="formats"] .gg-row{flex-direction:row;align-items:stretch;padding-left:3.75rem;padding-right:3.75rem}',
-    '  [data-hsc="formats"] .gg-row > div{flex:1 1 0%;max-width:none;margin:0}}',
-    '@media (min-width:1440px){[data-hsc="formats"] .gg-row{padding-left:14.25rem;padding-right:14.25rem;padding-bottom:4rem}}',
+    '@media (min-width:576px){[data-hsc="formats"] .hsc-row{padding-bottom:2.5rem}}',
+    '@media (min-width:768px){[data-hsc="formats"] .hsc-row{padding-bottom:3rem}}',
+    '@media (min-width:1024px){[data-hsc="formats"] .hsc-row{flex-direction:row;align-items:stretch;padding-left:3.75rem;padding-right:3.75rem}',
+    '  [data-hsc="formats"] .hsc-row > div{flex:1 1 0%;max-width:none;margin:0}}',
+    '@media (min-width:1440px){[data-hsc="formats"] .hsc-row{padding-left:14.25rem;padding-right:14.25rem;padding-bottom:4rem}}',
     // card title on the site's card-title step
     '[data-hsc="formats"] h3{font-size:1.25rem;line-height:2rem;margin-bottom:.5rem}',
     '@media (min-width:640px){[data-hsc="formats"] h3{font-size:1.75rem}}',
@@ -77,7 +77,7 @@
     var sec = document.createElement('section');
     sec.setAttribute('data-hsc', 'formats');
     sec.className = 'relative w-full min-h-0 overflow-hidden bg-black';
-    sec.innerHTML = '<div class="gg-row">' + CARDS.map(card).join('') + '</div>';
+    sec.innerHTML = '<div class="hsc-row">' + CARDS.map(card).join('') + '</div>';
     main.insertBefore(sec, block.nextSibling);
   }
 

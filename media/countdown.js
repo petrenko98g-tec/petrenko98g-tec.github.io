@@ -76,7 +76,7 @@
       bar.setAttribute('data-hsc-out', '');
       host.insertBefore(bar, document.getElementById('__next'));
       var setH = function () {
-        document.documentElement.style.setProperty('--gg-cd-h', bar.offsetHeight + 'px');
+        document.documentElement.style.setProperty('--hsc-cd-h', bar.offsetHeight + 'px');
       };
       setH();
       if (window.ResizeObserver) new ResizeObserver(setH).observe(bar);
@@ -107,7 +107,7 @@
     // out-of-root banner: pinned on its own, above the header (z-20); the header sticks
     // right under it instead of at 0
     '[data-hsc="countdown"][data-hsc-out]{position:sticky;top:0;z-index:21}',
-    'html:has([data-hsc-out]) .sticky{top:var(--gg-cd-h,0px)!important}',
+    'html:has([data-hsc-out]) .sticky{top:var(--hsc-cd-h,0px)!important}',
     // Phone (below md, where the banner stacks): title and link share one row under the
     // digits instead of taking a row each. The rows become the site's own 2-row template
     // (grid-rows-countdownMobileNoCTA: 2fr 1fr), the digits span both columns, and the

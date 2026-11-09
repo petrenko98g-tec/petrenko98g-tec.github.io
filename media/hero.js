@@ -4,12 +4,9 @@
    in the server HTML as well. What is left here has no field of its own and is added
    after React renders, then re-added if React renders again. */
 (function () {
-  // broken by hand into four lines that step out from 311px to 450px at the copy's own
-  // size — the long middle sentence used to wrap and leave two words alone on a line
-  var PARA = 'Для батьків, у яких немає часу.\n' +
-             'Тренуєшся, поки дитина в басейні\n' +
-             'поруч або в школі через критий перехід.\n' +
-             'Без няні, без розвозок, без відчуття провини.';
+  // hero copy (user, 2026-11-09)
+  var PARA = 'Ти\u00a0— на тренування. Дитина\u00a0— у\u00a0басейн або на єдиноборства. ' +
+             'Тренажерний зал, групові заняття, дитячий басейн і\u00a0спортивні секції.';
   var CTA = 'Хочу бути серед перших';
   var FINE = 'Отримай першим доступ до стартових умов клубу.';
 
@@ -26,7 +23,7 @@
       p.setAttribute('data-hsc', 'para');
       // white-space keeps the line breaks the copy is written with
       // full white at the site's normal weight — the earlier 300/75% washed out over the photo
-      p.style.cssText = 'max-width:29em;font-size:1.375rem;font-weight:400;line-height:1.55;color:#fff;margin-top:20px;text-align:left;white-space:pre-line';
+      p.style.cssText = 'max-width:29em;font-size:1.375rem;font-weight:400;line-height:1.55;color:#fff;margin-top:20px;text-align:left;white-space:normal';
       p.textContent = PARA;
       headWrap.appendChild(p);
     } else if (existing && existing.textContent !== PARA) {
@@ -58,7 +55,7 @@
     }
   }
 
-  /* The yellow countdown bar built here was replaced by the site's own countdown
+  /* The countdown bar built here was replaced by the site's own countdown
      banner (white, above the header), which the bundle already ships: it is driven
      by countdownSettings in __NEXT_DATA__ and was only dormant because its dates
      had passed. Nothing hand-made is needed. */
@@ -85,10 +82,27 @@
      and after that nothing here starts it again. */
   var userStopped = false;
 
+  // The hero video runs at half speed (user, 2026-11-09). A browser puts playbackRate
+  // back to defaultPlaybackRate whenever the source loads again, so both are set, and
+  // set again on the events where a reset can have happened.
+  var RATE = 0.5;
+  function slow(v) {
+    v.defaultPlaybackRate = RATE;
+    if (v.playbackRate !== RATE) v.playbackRate = RATE;
+    if (v.__hscSlow) return;
+    v.__hscSlow = true;
+    ['loadedmetadata', 'play', 'playing', 'ratechange'].forEach(function (ev) {
+      v.addEventListener(ev, function () {
+        if (v.playbackRate !== RATE) v.playbackRate = RATE;
+      });
+    });
+  }
+
   function keepPlaying() {
     var v = document.querySelector('.stage-module video');
     if (!v || v.__hscPlay) return;
     v.__hscPlay = true;
+    slow(v);
     // what a browser wants to see before it allows a start without a gesture
     v.muted = true; v.defaultMuted = true; v.setAttribute('muted', '');
     v.playsInline = true; v.setAttribute('playsinline', '');
@@ -143,6 +157,7 @@
     if (!v) { return document.addEventListener('DOMContentLoaded', early); }
     v.muted = true; v.defaultMuted = true; v.setAttribute('muted', '');
     v.playsInline = true; v.setAttribute('playsinline', '');
+    slow(v);
     var p = v.play();
     if (p && p.catch) p.catch(function () { /* the watchers in keepPlaying ask again */ });
   })();
@@ -166,8 +181,9 @@
     // header's location line, where the small steps stay
     '.tracking-subline.text-2\\.75xl{font-size:.75rem!important}',
     '.tracking-subline.sm\\:text-3\\.5xl{font-size:.875rem!important}',
-    '.stage-module .tracking-subline.text-2\\.75xl{font-size:1.125rem!important}',
-    '@media (min-width:640px){.stage-module .tracking-subline.sm\\:text-3\\.5xl{font-size:1.25rem!important}}',
+    // the reference sets the line above the headline at .75rem, uppercase, .05em
+    '.stage-module .tracking-subline.text-2\\.75xl{font-size:.75rem!important}',
+    '@media (min-width:640px){.stage-module .tracking-subline.sm\\:text-3\\.5xl{font-size:.75rem!important}}',
     '@media (max-width:640px){.cta-button.stage-content__cta.checkout-cta{width:100%!important}}',
     // on a phone the written line breaks only make ragged half-lines — let the copy flow,
     // and the copy steps back down so it does not read as loud as the headline above it

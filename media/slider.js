@@ -65,18 +65,17 @@
     // the module's own phone controls (a dot between two 7px arrows) are dropped —
     // the row is swiped, and the marks only added noise under the headline
     '[aria-label="Mobile slider navigation"]{display:none!important}',
-    // Dot row under a carousel: the gallery's marks (#FFDD00, the active one solid).
-    // On the white bands a dimmed yellow would disappear, so the idle dots are the
-    // page's own ink at 20%.
+    // Dot row under a carousel: idle dots are the ground's ink at 20%/28%, the current
+    // one solid ink — black on the white bands, white on the dark ones.
     '[data-hsc="dots"]{display:flex;justify-content:center;gap:.5rem;margin:1.5rem 0 0}',
     // only on a phone, where one card fills the row and the rest are out of sight; from
     // md up the row already shows several cards and the marks would only add noise
     '@media (min-width:768px){[data-hsc="dots"]{display:none}}',
     '[data-hsc="dots"] button{width:.5rem;height:.5rem;padding:0;border:0;border-radius:9999px;'
       + 'background:rgba(0,0,0,.2);cursor:pointer;transition:background .25s ease,transform .25s ease}',
-    '[data-hsc="dots"] button[aria-current="true"]{background:rgb(255 221 0);transform:scale(1.25)}',
+    '[data-hsc="dots"] button[aria-current="true"]{background:#000;transform:scale(1.25)}',
     '[data-hsc="dots"][data-on-dark] button{background:rgba(255,255,255,.28)}',
-    '[data-hsc="dots"][data-on-dark] button[aria-current="true"]{background:rgb(255 221 0)}',
+    '[data-hsc="dots"][data-on-dark] button[aria-current="true"]{background:#fff}',
     // Every grid row (the shoutout cards and the price cards): the card body carries the
     // module's lg:-translate-y-16 / lg:-mb-16, which lifts it 64px into the block above.
     // Here a text block sits above each row, so the lift would cover its text — dropped.
@@ -370,7 +369,7 @@
   }
 
   // How many cards a carousel holds is invisible until you drag it, so each row gets the
-  // gallery's dot marks under it: one per card, the current one solid yellow, click to jump.
+  // gallery's dot marks under it: one per card, the current one solid, click to jump.
   function dots(el) {
     var sw = el.swiper;
     if (!sw || el.__hscDots) return;

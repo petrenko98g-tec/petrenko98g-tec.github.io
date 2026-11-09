@@ -95,7 +95,7 @@
     // the menu items beside it
     '@media (max-width:1023px){.sticky .cta-button{font-size:1.125rem!important;padding:.625rem 1rem!important;line-height:1.5rem!important}}',
     '@media (min-width:1024px){.sticky .cta-button{font-size:1.375rem!important;padding:.875rem 1.75rem!important}}',
-    // the countdown banner above the header is yellow now, so the header CTA goes white;
+    // the countdown banner above the header is light now, so the header CTA goes white;
     // hover keeps the site's own invert (black fill, light label)
     '.sticky .cta-button{background-color:#fff!important;border-color:#fff!important;color:#000!important}',
     '.sticky .cta-button:hover{background-color:#000!important;border-color:#000!important;color:#fff!important}',
